@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021 Andriy Kmit'
 
 ;; Author: Andriy Kmit' <dev@madand.net>
-;; URL: https://github.com/madand/emacs.d
+;; URL: https://github.com/madand/.emacs.d
 
 ;; This file is NOT part of GNU Emacs.
 
