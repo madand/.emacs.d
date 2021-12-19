@@ -1,0 +1,7 @@
+*/
+!site-lisp/
+!themes/
+!straight/
+straight/*
+!straight/versions/
+*.elc

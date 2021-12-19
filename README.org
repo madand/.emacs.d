@@ -1,0 +1,573 @@
+#+TITLE: .emacs.d
+#+AUTHOR: Andriy Kmit'
+#+STARTUP: show2levels
+#+PROPERTY: header-args    :tangle init.el
+#+PROPERTY: header-args+   :lexical t
+
+This is a personal configuration of [[https://www.gnu.org/software/emacs/][GNU Emacs]].
+
+Currently, this is in WIP state, and my daily driver is still a heavily
+customized Spacemacs [[https://github.com/madand/dotemacs][setup]]; which gives me inspiration for what third party
+packages might be of use and how to build (semi-)mnemonic key bindings.
+
+* Early Config
+
+This section contains stuff that must be at the very top of the init file.
+
+** Preamble
+
+The heading part of the tangled ~init.el~ file.
+
+#+begin_src emacs-lisp
+;;; init.el --- The Emacs Initialization File        -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021 Andriy Kmit'
+
+;; Author: Andriy Kmit' <dev@madand.net>
+;; URL: https://github.com/madand/.emacs.d
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file was tangled (generated) from the file README.org. Thus, you SHOULD
+;; NOT modify this file directly. Instead, edit and re-tangle the README.org.
+
+;;; Code:
+#+end_src
+
+** Custom Settings in a Separate File
+
+#+begin_src emacs-lisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+end_src
+
+** Native Compilation
+
+[[info:elisp#Native Compilation][Native Compilation]]
+
+Allow native compilation to utilize all available cores.
+
+#+begin_src emacs-lisp
+(setq native-comp-async-jobs-number 4)
+#+end_src
+
+* Package Management
+
+Packages that streamline the installation and configuration of the packages 📦
+
+** straight.el
+
+[[https://github.com/raxod502/straight.el]]
+
+#+begin_src emacs-lisp
+  (setq straight-vc-git-auto-fast-forward nil
+        straight-use-package-by-default t
+        straight-check-for-modifications '(check-on-save find-when-checking))
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5)
+        (revision "4a473e51dea1ff5eeffee2eb193c3bade628b35e"))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           (format "https://raw.githubusercontent.com/raxod502/straight.el/%s/install.el" revision)
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
+** use-package
+
+[[https://github.com/jwiegley/use-package]]
+
+#+begin_src emacs-lisp
+(straight-use-package 'use-package)
+(require 'use-package)
+
+(use-package use-package
+  :bind (:map help-map
+         ("B" . describe-personal-keybindings)))
+#+end_src
+
+From this point on, we can use the ~use-package~ macro for package configuration.
+
+*** Gathering Statistics
+
+For gathering package statistics tangle the following block and ~M-x
+use-package-report~.
+
+#+begin_src emacs-lisp
+(setq use-package-compute-statistics t)
+#+end_src
+
+** no-littering
+
+[[https://github.com/emacscollective/no-littering]]
+
+This package must be loaded as early as possible.
+
+#+begin_src emacs-lisp
+(use-package no-littering)
+#+end_src
+
+* Essentials
+
+Generally useful packages, which are the core of this configuration.
+
+#+begin_src emacs-lisp
+(defconst my-quick-select-keys '(?n ?o ?e ?t ?a ?i ?r ?h)
+  "Keys for performing quick selections/jumps, with tools like Avy.")
+#+end_src
+
+** Avy
+
+[[https://github.com/abo-abo/avy]]
+
+avy is a GNU Emacs package for jumping to visible text using a
+char-based decision tree. It allows one to jump to any visible text with just
+3-5 key strokes (even between windows and frames).
+
+#+begin_src emacs-lisp
+(defvar xref-prompt-for-identifier)
+(defun my-avy-action-find-definitions (pt)
+  (goto-char pt)
+  (let ((xref-prompt-for-identifier nil))
+    (call-interactively #'xref-find-definitions)))
+
+(defvar my-avy-dispatch-alist
+  '((?k . avy-action-kill-move)
+    (?K . avy-action-kill-stay)
+    (?m . avy-action-teleport)
+    (?v . avy-action-mark)
+    (?c . avy-action-copy)
+    (?i . avy-action-ispell)
+    (?y . avy-action-yank)
+    (?Y . avy-action-yank-line)
+    (?z . avy-action-zap-to-char)
+    ;; Custom actions
+    (?d . my-avy-action-find-definitions)
+    ;; (?g . madand//avy-action-translate-stay)
+    )
+  "Override value of `avy-dispatch-alist' to prevent conflicts when
+`avy-keys' is set to Keymacs home row keys (raenotih).
+See also `my-quick-select-keys'.")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package avy
+  :custom
+  (avy-keys my-quick-select-keys)
+  (avy-dispatch-alist my-avy-dispatch-alist)
+  (avy-timeout-seconds 0.3)
+  (avy-background t)
+  (avy-single-candidate-jump nil)
+  :bind (("M-o" . avy-goto-char-timer)
+         ("C-M-," . avy-goto-line)))
+#+end_src
+
+*** Embark Integration
+
+[[https://karthinks.com/software/avy-can-do-anything/]]
+
+#+begin_src emacs-lisp
+(defun my-avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)
+
+(with-eval-after-load 'avy
+  (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark))
+#+end_src
+
+** Embark
+
+[[https://github.com/oantolin/embark]]
+
+#+begin_src emacs-lisp
+(use-package embark
+  :bind (("C-." . embark-act)))
+#+end_src
+
+** Marginalia
+
+[[https://github.com/minad/marginalia]]
+
+#+begin_src emacs-lisp
+(use-package marginalia
+  :bind
+  (("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+#+end_src
+
+* Display
+
+** Fonts
+
+*** Font Family
+
+Use [[https://github.com/be5invis/iosevka][Iosevka]] as the monospace font, and [[https://fonts.google.com/noto/specimen/Noto+Serif][Noto Serif]] as the proportional one.
+
+Note that with Emacs 28 or newer and with [[https://github.com/googlefonts/noto-emoji][Noto Emoji]] font installed, you get the
+full support for displaying emojis. No configuration needed!
+
+#+begin_src emacs-lisp
+(defvar my-font-mono (font-spec :family "Iosevka SS09" :size 16))
+;; (defvar my-font-mono-serif (font-spec :family "Iosevka Slab"))
+(defvar my-font-proportional (font-spec :family "Noto Serif" :size 20))
+
+(set-frame-font my-font-mono t t)
+
+(set-face-font  'default            my-font-mono)
+(set-face-font  'fixed-pitch        my-font-mono)
+(set-face-font  'fixed-pitch-serif  my-font-mono)
+(set-face-font  'variable-pitch     my-font-proportional)
+#+end_src
+
+*** Font Size
+
+16, 20
+21, 26
+
+Ensure that mode line will be displayed with the fixed font size, not tied to
+the font size of the ~default~ face.
+
+#+begin_src emacs-lisp
+(defface my-mode-line-font
+  nil
+  "Thih face ensures the font size for the mode line."
+  :group 'mode-line-faces)
+
+(set-face-font 'my-mode-line-font (font-spec :family "Iosevka SS09" :size 16))
+
+(set-face-attribute 'mode-line nil :inherit 'my-mode-line-font)
+(set-face-attribute 'mode-line-inactive nil :inherit 'my-mode-line-font)
+#+end_src
+
+*** Miscellaneous Font Configuration
+
+Allow modes to display bold and/or italic text. Particularly, this makes
+websites, rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.html][EWW]] mode, look much better:
+
+#+begin_src emacs-lisp
+(set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified)
+#+end_src
+
+** Theme: Solarized Dark
+
+[[https://github.com/bbatsov/solarized-emacs]]
+
+#+begin_src emacs-lisp
+(use-package solarized-theme
+  :defer t)
+#+end_src
+
+Make the underlined text (e.g. links) look more visually appealing in X11.
+
+#+begin_src emacs-lisp
+(setq x-underline-at-descent-line t)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq custom-theme-directory (expand-file-name "themes/" user-emacs-directory))
+(add-to-list 'load-path custom-theme-directory)
+
+(byte-recompile-file (expand-file-name "my-solarized-dark-theme.el"
+                                       custom-theme-directory)
+                     nil 0)
+(require 'my-solarized-dark-theme)	; This triggers native compilation
+(load-theme 'my-solarized-dark t)
+#+end_src
+
+* Frames
+
+Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
+
+#+begin_src emacs-lisp
+(define-key ctl-x-5-map "c" #'make-frame-command)
+#+end_src
+
+* Misc
+
+#+begin_src emacs-lisp
+(use-package savehist
+  :init
+  (savehist-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-z") 'set-mark-command)
+
+(define-key help-map "-" #'describe-syntax)
+(define-key help-map "S" nil)
+(define-key help-map "s" #'info-lookup-symbol)
+
+(define-key emacs-lisp-mode-map (kbd "<f5>") #'eval-defun)
+
+(setq set-mark-command-repeat-pop t)
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+(setq tab-always-indent 'complete)
+;; https://codeberg.org/joostkremers/visual-fill-column/src/branch/main/visual-fill-column.el
+
+(setq-default fill-column 80)
+(dolist (hook '(prog-mode-hook text-mode-hook))
+  (add-hook hook #'display-fill-column-indicator-mode))
+
+(setq show-paren-when-point-inside-paren t)
+(electric-pair-mode)
+(repeat-mode)
+
+(defun my-move-beginning-of-line (arg)
+  "This command combines the behavior of C-a and M-m.
+
+If point is not at the beginning of current line, move it there
+by calling `move-beginning-of-line'.  Otherwise, move point to
+the first non-whitespace character by calling `back-to-indentation'.
+
+With argument ARG not nil or 1, unconditionaly call
+`move-beginning-of-line' with the argument."
+  (interactive "^p")
+  (or arg (setq arg 1))
+  (if (and (bolp) (= arg 1))
+      (back-to-indentation)
+    (move-beginning-of-line arg)))
+
+(global-set-key (kbd "C-a") #'my-move-beginning-of-line)
+#+end_src
+
+** Startup
+
+#+begin_src emacs-lisp
+(use-package startup
+  :straight nil                         ; Built-in package
+  :no-require t
+  :custom
+  (initial-buffer-choice (expand-file-name "README.org" user-emacs-directory))
+  (inhibit-default-init t)
+  (inhibit-startup-screen t)
+  (inhibit-startup-echo-area-message t)
+  (inhibit-startup-message t)
+  (initial-scratch-message nil))
+#+end_src
+
+** Incremental Search (isearch)
+
+~-~ key can be used without using ~Shift~.
+
+#+begin_src emacs-lisp
+(define-key search-map "-" #'isearch-forward-symbol)
+#+end_src
+
+** History
+
+** Auto Save & Backup
+
+* Version Control
+** Magit
+
+[[https://magit.vc/]]
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+** vc
+
+Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
+
+#+begin_src emacs-lisp
+(setq vc-follow-symlinks t)
+#+end_src
+
+* International
+
+** Language Environments
+
+[[info:emacs#Language Environments][Language Environments]]
+
+#+begin_src emacs-lisp
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+#+end_src
+
+* Narrowing
+
+[[info:emacs#Narrowing][Narrowing]]
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f9>") #'narrow-to-defun)
+(global-set-key (kbd "<f10>") #'narrow-to-region)
+(with-eval-after-load 'org
+  (global-set-key (kbd "<f11>") #'org-narrow-to-subtree))
+(global-set-key (kbd "<f12>") #'widen)
+#+end_src
+
+* Org Mode
+
+[[https://orgmode.org/]]
+[[info:org#Top][Org Info Manual]]
+
+#+begin_src emacs-lisp
+(use-package org
+  :custom
+  (org-edit-src-content-indentation 0)
+  :bind (("C-c l" . org-store-link)
+         ("C-c c" . org-capture)
+         ("C-c a" . org-agenda)
+         :map org-mode-map
+         ("<f2>" . org-edit-special)
+         :map org-src-mode-map
+         ("<f2>" . org-edit-src-exit)))
+#+end_src
+
+** Emacs Lisp in Org
+
+Some conveniences for working with Elisp code blocks.
+
+#+begin_src emacs-lisp
+(defun my-org-insert-elisp-block ()
+  "Insert Emacs Lisp code block."
+  (interactive)
+  (open-line 2)
+  (forward-line)
+  (org-insert-structure-template "src")
+  (insert "emacs-lisp\n"))
+
+(with-eval-after-load 'org
+ (define-key org-mode-map (kbd "<f1>") #'my-org-insert-elisp-block))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my-org-eval-defun ()
+  "`eval-defun' that works in Org buffers."
+  (interactive)
+  (org-edit-src-code)
+  (if (eq 'emacs-lisp-mode major-mode)
+      (progn
+        (eval-defun nil)
+        (org-edit-src-exit))
+    (org-edit-src-abort)
+    (error "Not implemented for non-Elisp code blocks")))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "<f5>") #'my-org-eval-defun))
+#+end_src
+
+* Autotyping
+
+[[info:autotype#Top][Autotype]]
+
+** Abbrev Mode
+
+#+begin_src emacs-lisp
+(dolist (hook '(text-mode-hook prog-mode-hook))
+  (add-hook hook #'abbrev-mode))
+#+end_src
+
+** Hippie Expand
+
+[[info:autotype#Hippie Expand][Hippie Expand]]
+
+#+begin_src emacs-lisp
+(use-package hippie-exp
+  :straight nil                         ; Built-in package
+  :custom
+  (hippie-expand-try-functions-list '(try-complete-file-name-partially
+                                      try-complete-file-name
+                                      try-expand-all-abbrevs
+                                      try-expand-list
+                                      try-expand-line
+                                      try-expand-dabbrev
+                                      try-expand-dabbrev-all-buffers
+                                      try-expand-dabbrev-from-kill
+                                      try-complete-lisp-symbol-partially
+                                      try-complete-lisp-symbol))
+  :bind (("M-/" . hippie-expand)))
+#+end_src
+
+* Minibuffer
+
+#+begin_src emacs-lisp
+(setq enable-recursive-minibuffers t)
+#+end_src
+
+** Vertico
+
+[[https://github.com/minad/vertico]]
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :init
+  (vertico-mode)
+  (setq vertico-scroll-margin 1)
+  (setq vertico-count 16)
+  (setq vertico-cycle t))
+#+end_src
+
+** Minibuffer Hacks
+
+*** Up Directory
+
+#+begin_src emacs-lisp
+(defun up-directory ()
+  "Move up a directory in minibuffer without affecting the kill ring."
+  (interactive)
+  (when (string-match-p "/." (minibuffer-contents))
+    (let ((end (point)))
+      (re-search-backward "/.")
+      (forward-char)
+      (delete-region (point) end))))
+
+(define-key minibuffer-local-filename-completion-map
+  (kbd "C-DEL") #'up-directory)
+#+end_src
+
+* License
+
+GNU GPLv3.
+
+* Epilogue
+
+#+begin_src emacs-lisp
+(defun my-compile-init-file ()
+  "Byte and native (re)compile the Emacs init file (init.el)."
+  (let ((init-file (expand-file-name "init.el" user-emacs-directory)))
+    (byte-recompile-file init-file nil 0)
+    (native-compile init-file)))
+#+end_src
+
+File-local variables defined here make Emacs (re)tangle and then (re)compile the
+init file (~init.el~), whenever this file is saved.
+
+#+begin_example
+Local Variables:
+eval: (add-hook 'after-save-hook #'org-babel-tangle 90 t)
+eval: (add-hook 'after-save-hook #'my-compile-init-file 91 t)
+fill-column: 80
+indent-tabs-mode: nil
+End:
+#+end_example
