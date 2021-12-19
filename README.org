@@ -270,7 +270,7 @@ the font size of the ~default~ face.
 *** Miscellaneous Font Configuration
 
 Allow modes to display bold and/or italic text. Particularly, this makes
-websites, rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.html][EWW]] mode, look much better:
+websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.html][EWW]] mode look much better:
 
 #+begin_src emacs-lisp
 (set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified)
@@ -392,7 +392,9 @@ With argument ARG not nil or 1, unconditionaly call
 [[https://magit.vc/]]
 
 #+begin_src emacs-lisp
-
+(use-package magit
+  :init
+  (setq magit-define-global-key-bindings t))
 #+end_src
 
 ** vc
