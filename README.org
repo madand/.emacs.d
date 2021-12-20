@@ -129,98 +129,15 @@ This package must be loaded as early as possible.
 (use-package no-littering)
 #+end_src
 
-* Essentials
+** delight
 
-Generally useful packages, which are the core of this configuration.
+[[https://www.emacswiki.org/emacs/DelightedModes]]
 
-#+begin_src emacs-lisp
-(defconst my-quick-select-keys '(?n ?o ?e ?t ?a ?i ?r ?h)
-  "Keys for performing quick selections/jumps, with tools like Avy.")
-#+end_src
-
-** Avy
-
-[[https://github.com/abo-abo/avy]]
-
-avy is a GNU Emacs package for jumping to visible text using a
-char-based decision tree. It allows one to jump to any visible text with just
-3-5 key strokes (even between windows and frames).
+Delight enables you to easily customise how major and minor modes appear in the
+Mode Line.
 
 #+begin_src emacs-lisp
-(defvar xref-prompt-for-identifier)
-(defun my-avy-action-find-definitions (pt)
-  (goto-char pt)
-  (let ((xref-prompt-for-identifier nil))
-    (call-interactively #'xref-find-definitions)))
-
-(defvar my-avy-dispatch-alist
-  '((?k . avy-action-kill-move)
-    (?K . avy-action-kill-stay)
-    (?m . avy-action-teleport)
-    (?v . avy-action-mark)
-    (?c . avy-action-copy)
-    (?i . avy-action-ispell)
-    (?y . avy-action-yank)
-    (?Y . avy-action-yank-line)
-    (?z . avy-action-zap-to-char)
-    ;; Custom actions
-    (?d . my-avy-action-find-definitions)
-    ;; (?g . madand//avy-action-translate-stay)
-    )
-  "Override value of `avy-dispatch-alist' to prevent conflicts when
-`avy-keys' is set to Keymacs home row keys (raenotih).
-See also `my-quick-select-keys'.")
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package avy
-  :custom
-  (avy-keys my-quick-select-keys)
-  (avy-dispatch-alist my-avy-dispatch-alist)
-  (avy-timeout-seconds 0.3)
-  (avy-background t)
-  (avy-single-candidate-jump nil)
-  :bind (("M-o" . avy-goto-char-timer)
-         ("C-M-," . avy-goto-line)))
-#+end_src
-
-*** Embark Integration
-
-[[https://karthinks.com/software/avy-can-do-anything/]]
-
-#+begin_src emacs-lisp
-(defun my-avy-action-embark (pt)
-  (unwind-protect
-      (save-excursion
-        (goto-char pt)
-        (embark-act))
-    (select-window
-     (cdr (ring-ref avy-ring 0))))
-  t)
-
-(with-eval-after-load 'avy
-  (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark))
-#+end_src
-
-** Embark
-
-[[https://github.com/oantolin/embark]]
-
-#+begin_src emacs-lisp
-(use-package embark
-  :bind (("C-." . embark-act)))
-#+end_src
-
-** Marginalia
-
-[[https://github.com/minad/marginalia]]
-
-#+begin_src emacs-lisp
-(use-package marginalia
-  :bind
-  (("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
+(use-package delight)
 #+end_src
 
 * Display
@@ -249,8 +166,8 @@ full support for displaying emojis. No configuration needed!
 
 *** Font Size
 
-16, 20
-21, 26
+- 16, 20
+- 21, 26
 
 Ensure that mode line will be displayed with the fixed font size, not tied to
 the font size of the ~default~ face.
@@ -292,7 +209,7 @@ Make the underlined text (e.g. links) look more visually appealing in X11.
 #+end_src
 
 #+begin_src emacs-lisp
-(setq custom-theme-directory (expand-file-name "themes/" user-emacs-directory))
+(setq custom-theme-directory (expand-file-name "themes/ " user-emacs-directory))
 (add-to-list 'load-path custom-theme-directory)
 
 (byte-recompile-file (expand-file-name "my-solarized-dark-theme.el"
@@ -300,6 +217,202 @@ Make the underlined text (e.g. links) look more visually appealing in X11.
                      nil 0)
 (require 'my-solarized-dark-theme)	; This triggers native compilation
 (load-theme 'my-solarized-dark t)
+#+end_src
+
+** text-scale+
+
+[[https://github.com/madand/text-scale-plus.el]]
+
+Improve ~text-scale-mode~ with multi-face support. 
+
+#+begin_src emacs-lisp
+(use-package text-scale+
+  :straight '(text-scale+ :host github :repo "madand/text-scale-plus.el"))
+#+end_src
+
+** form-feed
+
+[[https://depp.brause.cc/form-feed/]]
+
+Display ^L glyphs as horizontal lines.
+
+#+begin_src emacs-lisp
+(use-package form-feed
+  :straight '(form-feed :host nil :repo "https://depp.brause.cc/form-feed.git")
+  :delight
+  :init (global-form-feed-mode))
+#+end_src
+
+** display-fill-column-indicator
+
+[[info:emacs#Displaying Boundaries][emacs#Displaying Boundaries]]
+
+#+begin_src emacs-lisp
+(use-package display-fill-column-indicator
+  :straight nil				; Built-in package
+  :hook (prog-mode text-mode))
+#+end_src
+
+* Fundamental External Packages
+
+Third-party packages that are fundamental for my setup. They might improve your
+Emacs workflow in major ways. Moreover, they synergize with each other!
+
+#+begin_src emacs-lisp
+(defvar my-quick-select-keys '(?n ?o ?e ?t ?a ?i ?r ?h)
+  "Keys for performing quick selections/jumps with tools like Avy.")
+#+end_src
+
+** Avy
+
+- [[https://github.com/abo-abo/avy]]
+- [[https://karthinks.com/software/avy-can-do-anything/]]
+
+avy is a GNU Emacs package for jumping to visible text using a
+char-based decision tree. It allows one to jump to any visible text with just
+3-5 key strokes (even between windows and frames).
+
+#+begin_src emacs-lisp
+(defvar xref-prompt-for-identifier)
+(defun my-avy-action-find-definitions (pt)
+  (goto-char pt)
+  (let ((xref-prompt-for-identifier nil))
+    (call-interactively #'xref-find-definitions)))
+
+(defvar my-avy-dispatch-alist
+  '((?k . avy-action-kill-move)
+    (?K . avy-action-kill-stay)
+    (?m . avy-action-teleport)
+    (?v . avy-action-mark)
+    (?c . avy-action-copy)
+    (?i . avy-action-ispell)
+    (?y . avy-action-yank)
+    (?Y . avy-action-yank-line)
+    (?z . avy-action-zap-to-char)
+    ;; Custom actions
+    (?d . my-avy-action-find-definitions)
+    ;; (?g . madand//avy-action-translate-stay)
+    )
+  "Override value of `avy-dispatch-alist' to prevent conflicts when
+`avy-keys' is set to Keymacs home row keys (raenotih).
+See also `my-quick-select-keys'.")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package avy
+  :custom
+  (avy-keys my-quick-select-keys)
+  (avy-dispatch-alist my-avy-dispatch-alist)
+  (avy-timeout-seconds 0.4)
+  (avy-background t)
+  (avy-single-candidate-jump nil)
+  :bind (("M-o" . avy-goto-char-timer)
+         ("C-M-," . avy-goto-line)))
+#+end_src
+
+*** Avy Embark Integration
+
+#+begin_src emacs-lisp
+(defun my-avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)
+
+(with-eval-after-load 'avy
+  (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark))
+#+end_src
+
+** Embark
+
+[[https://github.com/oantolin/embark]]
+
+#+begin_src emacs-lisp
+(use-package embark
+  :bind (("C-." . embark-act)
+	 ("M-." . embark-dwim)))
+#+end_src
+
+** link-hint
+
+[[https://github.com/noctuid/link-hint.el]]
+
+Use Avy to open, copy, or take a user-defined action on “links”.
+
+#+begin_src emacs-lisp
+(use-package link-hint
+  :bind (("C-;" . link-hint-open-link)
+	 :map custom-mode-map (";" . link-hint-open-link)
+	 :map view-mode-map (";" . link-hint-open-link)
+	 :map Info-mode-map (";" . link-hint-open-link)
+         ;; Modes that derive from `special-mode': `eww-mode', `help-mode',
+	 ;; `magit-mode'
+	 :map special-mode-map (";" . link-hint-open-link)))
+#+end_src
+
+** Marginalia
+
+[[https://github.com/minad/marginalia]]
+
+#+begin_src emacs-lisp
+(use-package marginalia
+  :bind
+  (("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+#+end_src
+
+** Vertico
+
+[[https://github.com/minad/vertico]]
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :init
+  (vertico-mode)
+  (setq vertico-scroll-margin 1)
+  (setq vertico-count 16)
+  (setq vertico-cycle t))
+#+end_src
+
+* Minibuffer
+
+[[info:emacs#Minibuffer][emacs#Minibuffer]]
+
+Allow recursive minibuffers:
+
+#+begin_src emacs-lisp
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1)
+#+end_src
+
+Make default argument be displayed as ~[DEFAULT-ARG]~ instead of
+~(default DEFAULT-ARG)~, saving some screen space:
+
+#+begin_src emacs-lisp
+(setq minibuffer-eldef-shorten-default t)
+#+end_src
+
+
+** Minibuffer Hacks
+
+*** Up Directory
+
+#+begin_src emacs-lisp
+(defun up-directory ()
+  "Move up a directory in minibuffer without affecting the kill ring."
+  (interactive)
+  (when (string-match-p "/." (minibuffer-contents))
+    (let ((end (point)))
+      (re-search-backward "/.")
+      (forward-char)
+      (delete-region (point) end))))
+
+(define-key minibuffer-local-filename-completion-map
+  (kbd "C-DEL") #'up-directory)
 #+end_src
 
 * Frames
@@ -311,6 +424,7 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 #+end_src
 
 * Misc
+
 
 #+begin_src emacs-lisp
 (use-package savehist
@@ -334,8 +448,6 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 ;; https://codeberg.org/joostkremers/visual-fill-column/src/branch/main/visual-fill-column.el
 
 (setq-default fill-column 80)
-(dolist (hook '(prog-mode-hook text-mode-hook))
-  (add-hook hook #'display-fill-column-indicator-mode))
 
 (setq show-paren-when-point-inside-paren t)
 (electric-pair-mode)
@@ -393,6 +505,7 @@ With argument ARG not nil or 1, unconditionaly call
 
 #+begin_src emacs-lisp
 (use-package magit
+  :defer t
   :init
   (setq magit-define-global-key-bindings t))
 #+end_src
@@ -511,41 +624,21 @@ Some conveniences for working with Elisp code blocks.
   :bind (("M-/" . hippie-expand)))
 #+end_src
 
-* Minibuffer
+* Lisp
+
+Stuff for improving the experience when working with Lisp code.
+
+** lisp-extra-font-lock
+
+[[https://github.com/Lindydancer/lisp-extra-font-lock]]
 
 #+begin_src emacs-lisp
-(setq enable-recursive-minibuffers t)
-#+end_src
-
-** Vertico
-
-[[https://github.com/minad/vertico]]
-
-#+begin_src emacs-lisp
-(use-package vertico
+(use-package lisp-extra-font-lock
+  :custom
+  (lisp-extra-font-lock-quoted-face nil)
+  (lisp-extra-font-lock-quoted-function-face nil)
   :init
-  (vertico-mode)
-  (setq vertico-scroll-margin 1)
-  (setq vertico-count 16)
-  (setq vertico-cycle t))
-#+end_src
-
-** Minibuffer Hacks
-
-*** Up Directory
-
-#+begin_src emacs-lisp
-(defun up-directory ()
-  "Move up a directory in minibuffer without affecting the kill ring."
-  (interactive)
-  (when (string-match-p "/." (minibuffer-contents))
-    (let ((end (point)))
-      (re-search-backward "/.")
-      (forward-char)
-      (delete-region (point) end))))
-
-(define-key minibuffer-local-filename-completion-map
-  (kbd "C-DEL") #'up-directory)
+  (lisp-extra-font-lock-global-mode))
 #+end_src
 
 * License
