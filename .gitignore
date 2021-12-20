@@ -4,4 +4,7 @@
 !straight/
 straight/*
 !straight/versions/
+init.el
 *.elc
+*~
+*#
