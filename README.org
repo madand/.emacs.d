@@ -415,6 +415,26 @@ Make default argument be displayed as ~[DEFAULT-ARG]~ instead of
   (kbd "C-DEL") #'up-directory)
 #+end_src
 
+* Files
+
+** find file (or url) at point
+
+Replace ~find-file~ and friends with smarter versions.
+
+#+begin_src emacs-lisp
+(ffap-bindings)
+#+end_src
+
+When a file is opened read-only, enable ~view-mode~.
+
+#+begin_src emacs-lisp
+(defun my-turn-on-view-mode (&rest _)
+  (view-mode 1))
+
+(advice-add 'ffap-read-only :after #'my-turn-on-view-mode)
+(advice-add 'ffap-read-only-other-window :after #'my-turn-on-view-mode)
+#+end_src
+
 * Frames
 
 Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
@@ -425,16 +445,19 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 
 * Misc
 
-
 #+begin_src emacs-lisp
 (use-package savehist
   :init
   (savehist-mode))
 #+end_src
 
+Kitchen sink for the time being.
+
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-z") 'set-mark-command)
+
+(global-set-key (kbd "C-c v") #'view-mode)
 
 (define-key help-map "-" #'describe-syntax)
 (define-key help-map "S" nil)
