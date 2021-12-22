@@ -209,7 +209,7 @@ Make the underlined text (e.g. links) look more visually appealing in X11.
 #+end_src
 
 #+begin_src emacs-lisp
-(setq custom-theme-directory (expand-file-name "themes/ " user-emacs-directory))
+(setq custom-theme-directory (expand-file-name "themes/" user-emacs-directory))
 (add-to-list 'load-path custom-theme-directory)
 
 (byte-recompile-file (expand-file-name "my-solarized-dark-theme.el"
@@ -250,7 +250,7 @@ Display ^L glyphs as horizontal lines.
 #+begin_src emacs-lisp
 (use-package display-fill-column-indicator
   :straight nil				; Built-in package
-  :hook (prog-mode text-mode))
+  :hook ((prog-mode text-mode) . display-fill-column-indicator-mode))
 #+end_src
 
 * Fundamental External Packages
