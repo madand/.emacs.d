@@ -223,7 +223,7 @@ Make the underlined text (e.g. links) look more visually appealing in X11.
 
 [[https://github.com/madand/text-scale-plus.el]]
 
-Improve ~text-scale-mode~ with multi-face support. 
+Improve ~text-scale-mode~ with multi-face support.
 
 #+begin_src emacs-lisp
 (use-package text-scale+
@@ -326,16 +326,6 @@ See also `my-quick-select-keys'.")
   (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark))
 #+end_src
 
-** Embark
-
-[[https://github.com/oantolin/embark]]
-
-#+begin_src emacs-lisp
-(use-package embark
-  :bind (("C-." . embark-act)
-	 ("M-." . embark-dwim)))
-#+end_src
-
 ** link-hint
 
 [[https://github.com/noctuid/link-hint.el]]
@@ -368,6 +358,15 @@ Customize buffer:
 (advice-add 'link-hint-open-link :around #'my-with-inhibit-resize-mini-widows)
 ;; (advice-remove 'link-hint-open-link  #'my-with-inhibit-resize-mini-widows)
 #+end_src
+
+** Embark
+
+[[https://github.com/oantolin/embark]]
+
+#+begin_src emacs-lisp
+(use-package embark
+  :bind (("C-." . embark-act)
+	 ("M-." . embark-dwim)))
 #+end_src
 
 ** Marginalia
@@ -382,6 +381,16 @@ Customize buffer:
   (marginalia-mode))
 #+end_src
 
+** Orderless
+
+[[https://github.com/oantolin/orderless]]
+
+#+begin_src emacs-lisp
+(use-package orderless
+  :custom
+  (completion-styles '(orderless)))
+#+end_src
+
 ** Vertico
 
 [[https://github.com/minad/vertico]]
@@ -393,6 +402,12 @@ Customize buffer:
   (setq vertico-scroll-margin 1)
   (setq vertico-count 16)
   (setq vertico-cycle t))
+#+end_src
+
+** Consult
+
+#+begin_src emacs-lisp
+(use-package consult)
 #+end_src
 
 * Minibuffer
@@ -471,10 +486,15 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 Kitchen sink for the time being.
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-z") 'set-mark-command)
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+(global-set-key (kbd "C-x k") #'kill-this-buffer)
+(global-set-key (kbd "C-z") #'set-mark-command)
 
 (global-set-key (kbd "C-c v") #'view-mode)
+
+(global-set-key (kbd "M-c") #'capitalize-dwim)
+(global-set-key (kbd "M-l") #'downcase-dwim)
+(global-set-key (kbd "M-u") #'upcase-dwim)
 
 (define-key help-map "-" #'describe-syntax)
 (define-key help-map "S" nil)
@@ -483,9 +503,14 @@ Kitchen sink for the time being.
 (define-key emacs-lisp-mode-map (kbd "<f5>") #'eval-defun)
 
 (setq set-mark-command-repeat-pop t)
+
 (setq read-extended-command-predicate #'command-completion-default-include-p)
+
 (setq tab-always-indent 'complete)
 ;; https://codeberg.org/joostkremers/visual-fill-column/src/branch/main/visual-fill-column.el
+
+;; Read buffer for external processes.
+(setq read-process-output-max (* 256 1024))
 
 (setq-default fill-column 80)
 
@@ -493,22 +518,9 @@ Kitchen sink for the time being.
 (electric-pair-mode)
 (repeat-mode)
 
-(defun my-move-beginning-of-line (arg)
-  "This command combines the behavior of C-a and M-m.
-
-If point is not at the beginning of current line, move it there
-by calling `move-beginning-of-line'.  Otherwise, move point to
-the first non-whitespace character by calling `back-to-indentation'.
-
-With argument ARG not nil or 1, unconditionaly call
-`move-beginning-of-line' with the argument."
-  (interactive "^p")
-  (or arg (setq arg 1))
-  (if (and (bolp) (= arg 1))
-      (back-to-indentation)
-    (move-beginning-of-line arg)))
-
-(global-set-key (kbd "C-a") #'my-move-beginning-of-line)
+(use-package mwim
+  :bind (("C-a" . mwim-beginning)
+	 ("C-e" . mwim-end)))
 #+end_src
 
 ** Startup
@@ -536,7 +548,40 @@ With argument ARG not nil or 1, unconditionaly call
 
 ** History
 
+** Xref
+
+[[info:emacs#Xref][emacs#Xref]]
+
+Make xref use rg for faster searches:
+
+#+begin_src emacs-lisp
+(use-package xref
+  :straight nil
+  :custom
+  (xref-search-program 'ripgrep))
+#+end_src
+
+Make the found definition be displayed at the top of the window:
+
+#+begin_src emacs-lisp
+(defun my-recenter-top-1 ()
+  "Recenter point to 1 line below the top of the window."
+  (recenter 1))
+
+(remove-hook 'xref-after-update-hook 'recenter)
+(add-hook 'xref-after-update-hook #'my-recenter-top-1)
+#+end_src
+
 ** Auto Save & Backup
+
+** Help
+
+#+begin_src emacs-lisp
+(use-package help
+  :straight nil
+  :custom
+  (help-window-select t))
+#+end_src
 
 * Version Control
 ** Magit
@@ -672,13 +717,25 @@ Stuff for improving the experience when working with Lisp code.
 
 [[https://github.com/Lindydancer/lisp-extra-font-lock]]
 
+This package adds highlighting for a bunch of additinal things. The best one, in
+my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
+~let~-expressions.
+
 #+begin_src emacs-lisp
 (use-package lisp-extra-font-lock
   :custom
   (lisp-extra-font-lock-quoted-face nil)
   (lisp-extra-font-lock-quoted-function-face nil)
+  (lisp-extra-font-lock-backquote-face nil)
   :init
   (lisp-extra-font-lock-global-mode))
+#+end_src
+
+** paredit
+
+#+begin_src emacs-lisp
+(use-package paredit
+  :hook ((emacs-lisp-mode lisp-mode) . enable-paredit-mode))
 #+end_src
 
 * License
