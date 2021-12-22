@@ -345,12 +345,29 @@ Use Avy to open, copy, or take a user-defined action on “links”.
 #+begin_src emacs-lisp
 (use-package link-hint
   :bind (("C-;" . link-hint-open-link)
-	 :map custom-mode-map (";" . link-hint-open-link)
-	 :map view-mode-map (";" . link-hint-open-link)
 	 :map Info-mode-map (";" . link-hint-open-link)
          ;; Modes that derive from `special-mode': `eww-mode', `help-mode',
 	 ;; `magit-mode'
-	 :map special-mode-map (";" . link-hint-open-link)))
+	 :map special-mode-map (";" . link-hint-open-link))
+  :init
+  (with-eval-after-load 'cus-edit
+    (define-key custom-mode-map (kbd ";") #'link-hint-open-link))
+  (with-eval-after-load 'view
+    (define-key view-mode-map (kbd ";") #'link-hint-open-link)))
+#+end_src
+
+Fix ~link-hint~ scrolling window up when point is in the last visible line of a
+Customize buffer:
+
+#+begin_src emacs-lisp
+(defun my-with-inhibit-resize-mini-widows (function &rest arguments)
+  "Call FUNCTION with ARGUMENTS, with `resize-mini-windows' bound to nil."
+  (let ((resize-mini-windows nil))
+    (apply function arguments)))
+
+(advice-add 'link-hint-open-link :around #'my-with-inhibit-resize-mini-widows)
+;; (advice-remove 'link-hint-open-link  #'my-with-inhibit-resize-mini-widows)
+#+end_src
 #+end_src
 
 ** Marginalia
