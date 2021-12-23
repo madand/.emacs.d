@@ -169,6 +169,24 @@ full support for displaying emojis. No configuration needed!
 - 16, 20
 - 21, 26
 
+#+begin_src emacs-lisp
+(defvar my-font-sizes '(:laptop (16 20) :monitor (21 26)))
+
+(defun my-set-faces-font-size (sizes)
+  (pcase-let ((`(,fixed-font-size ,variable-font-size) sizes))
+    (set-face-font 'variable-pitch (font-spec :size variable-font-size))
+    (dolist (face '(default fixed-pitch fixed-pitch-serif))
+      (set-face-font face (font-spec :size fixed-font-size)))))
+
+(defun my-set-font-size-laptop ()
+  (interactive)
+  (my-set-faces-font-size (plist-get my-font-sizes :laptop)))
+
+(defun my-set-font-size-monitor ()
+  (interactive)
+  (my-set-faces-font-size (plist-get my-font-sizes :monitor)))
+#+end_src
+
 Ensure that mode line will be displayed with the fixed font size, not tied to
 the font size of the ~default~ face.
 
