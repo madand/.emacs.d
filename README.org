@@ -166,9 +166,6 @@ full support for displaying emojis. No configuration needed!
 
 *** Font Size
 
-- 16, 20
-- 21, 26
-
 #+begin_src emacs-lisp
 (defvar my-font-sizes '(:laptop (16 20) :monitor (21 26)))
 
