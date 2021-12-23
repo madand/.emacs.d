@@ -195,8 +195,11 @@ the font size of the ~default~ face.
 
 (set-face-font 'my-mode-line-font my-font-mono)
 
-(set-face-attribute 'mode-line nil :inherit 'my-mode-line-font)
-(set-face-attribute 'mode-line-inactive nil :inherit 'my-mode-line-font)
+(defun my-set-mode-line-font-face (&rest _)
+  (set-face-attribute 'mode-line nil :inherit 'my-mode-line-font)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'my-mode-line-font))
+
+(advice-add 'load-theme :after #'my-set-mode-line-font-face)
 #+end_src
 
 *** Miscellaneous Font Configuration
