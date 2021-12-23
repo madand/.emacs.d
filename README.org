@@ -586,6 +586,13 @@ Make the found definition be displayed at the top of the window:
   :bind
   (("C-h C-l" . find-library)))
 #+end_src
+
+** rainbow-mode
+
+#+begin_src emacs-lisp
+(use-package rainbow-mode
+  :bind
+  (("C-<f1> r" . rainbow-mode)))
 #+end_src
 
 * Version Control
