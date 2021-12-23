@@ -9,7 +9,7 @@ This is a personal configuration of [[https://www.gnu.org/software/emacs/][GNU E
 Currently, this is in WIP state, and my daily driver is still a heavily
 customized Spacemacs [[https://github.com/madand/dotemacs][setup]]; which gives me inspiration for what third party
 packages might be of use and how to build (semi-)mnemonic key bindings.
-
+ 
 * Early Config
 
 This section contains stuff that must be at the very top of the init file.
@@ -69,7 +69,7 @@ Allow native compilation to utilize all available cores.
 
 * Package Management
 
-Packages that streamline the installation and configuration of the packages 📦
+The packages that streamline the installation and configuration of packages 📦
 
 ** straight.el
 
@@ -175,10 +175,10 @@ the font size of the ~default~ face.
 #+begin_src emacs-lisp
 (defface my-mode-line-font
   nil
-  "Thih face ensures the font size for the mode line."
+  "This face ensures the font size for the mode line."
   :group 'mode-line-faces)
 
-(set-face-font 'my-mode-line-font (font-spec :family "Iosevka SS09" :size 16))
+(set-face-font 'my-mode-line-font my-font-mono)
 
 (set-face-attribute 'mode-line nil :inherit 'my-mode-line-font)
 (set-face-attribute 'mode-line-inactive nil :inherit 'my-mode-line-font)
@@ -388,7 +388,9 @@ Customize buffer:
 #+begin_src emacs-lisp
 (use-package orderless
   :custom
-  (completion-styles '(orderless)))
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
 ** Vertico
@@ -580,7 +582,10 @@ Make the found definition be displayed at the top of the window:
 (use-package help
   :straight nil
   :custom
-  (help-window-select t))
+  (help-window-select t)
+  :bind
+  (("C-h C-l" . find-library)))
+#+end_src
 #+end_src
 
 * Version Control
@@ -640,6 +645,7 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
          ("C-c a" . org-agenda)
          :map org-mode-map
          ("<f2>" . org-edit-special)
+	 ("C-c C-j" . consult-org-heading)
          :map org-src-mode-map
          ("<f2>" . org-edit-src-exit)))
 #+end_src
