@@ -211,30 +211,13 @@ websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.h
 (set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified)
 #+end_src
 
-** Theme: Solarized Dark
-
-[[https://github.com/bbatsov/solarized-emacs]]
+** Themes: Modus Themes
 
 #+begin_src emacs-lisp
-(use-package solarized-theme
-  :defer t)
-#+end_src
+(setq modus-themes-operandi-color-overrides '((bg-main . "#fcfbfa")
+					      (fg-main . "#101010")))
 
-Make the underlined text (e.g. links) look more visually appealing in X11.
-
-#+begin_src emacs-lisp
-(setq x-underline-at-descent-line t)
-#+end_src
-
-#+begin_src emacs-lisp
-(setq custom-theme-directory (expand-file-name "themes/" user-emacs-directory))
-(add-to-list 'load-path custom-theme-directory)
-
-(byte-recompile-file (expand-file-name "my-solarized-dark-theme.el"
-                                       custom-theme-directory)
-                     nil 0)
-(require 'my-solarized-dark-theme)	; This triggers native compilation
-(load-theme 'my-solarized-dark t)
+(load-theme 'modus-operandi t)
 #+end_src
 
 ** text-scale+
