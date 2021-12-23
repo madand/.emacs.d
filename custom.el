@@ -6,9 +6,6 @@
  '(blink-cursor-blinks 3)
  '(history-delete-duplicates t)
  '(history-length 1000)
- '(modus-themes-bold-constructs t)
- '(modus-themes-inhibit-reload nil)
- '(modus-themes-italic-constructs t)
  '(org-src-window-setup 'current-window)
  '(safe-local-variable-values
    '((common-lisp-style . modern)
@@ -25,4 +22,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+)
