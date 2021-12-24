@@ -538,6 +538,7 @@ Kitchen sink for the time being.
 
 ;; Read buffer for external processes.
 (setq read-process-output-max (* 256 1024))
+(setq source-directory (expand-file-name "~/git/emacs-git/"))
 
 (setq-default fill-column 80)
 
