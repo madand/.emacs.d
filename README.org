@@ -631,7 +631,35 @@ working drectories.
     (unless (file-directory-p dir)
       (make-directory dir))))
 #+end_src
- 
+
+** Backup Files
+
+[[info:emacs#Backup][emacs#Backup]]
+
+Make backups for files handled by version control (e.g. Git). 
+
+#+begin_src emacs-lisp
+(setq vc-make-backup-files t)
+#+end_src
+
+Always make numeric backup versions.
+
+#+begin_src emacs-lisp
+(setq version-control t)
+#+end_src
+
+Keep 5 most recent numeric backups of a file.
+
+#+begin_src emacs-lisp
+(setq kept-new-versions 5)
+#+end_src
+
+Delete excess backup versions silently.
+
+#+begin_src emacs-lisp
+(setq delete-old-versions t)
+#+end_src
+
 ** Help
 
 #+begin_src emacs-lisp
