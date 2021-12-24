@@ -64,7 +64,7 @@ The heading part of the tangled ~init.el~ file.
 Allow native compilation to utilize all available cores.
 
 #+begin_src emacs-lisp
-(setq native-comp-async-jobs-number 4)
+(setq native-comp-async-jobs-number (num-processors))
 #+end_src
 
 * Package Management
