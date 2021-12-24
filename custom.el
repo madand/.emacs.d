@@ -4,8 +4,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(blink-cursor-blinks 3)
- '(history-delete-duplicates t)
- '(history-length 1000)
  '(org-src-window-setup 'current-window)
  '(safe-local-variable-values
    '((common-lisp-style . modern)
@@ -13,7 +11,6 @@
      (toc-org-max-depth . 4)
      (eval add-hook 'after-save-hook #'my-compile-init-file 91 t)
      (eval add-hook 'after-save-hook #'org-babel-tangle 90 t)))
- '(savehist-additional-variables '(kill-ring))
  '(scroll-margin 1)
  '(use-dialog-box nil)
  '(use-short-answers t)

@@ -432,18 +432,43 @@ Customize buffer:
 
 [[info:emacs#Minibuffer][emacs#Minibuffer]]
 
-Allow recursive minibuffers:
-
-#+begin_src emacs-lisp
-(setq enable-recursive-minibuffers t)
-(minibuffer-depth-indicate-mode 1)
-#+end_src
-
 Make default argument be displayed as ~[DEFAULT-ARG]~ instead of
 ~(default DEFAULT-ARG)~, saving some screen space:
 
 #+begin_src emacs-lisp
 (setq minibuffer-eldef-shorten-default t)
+#+end_src
+
+** Recursive Minibuffers
+
+[[info:emacs#Recursive Edit][emacs#Recursive Edit]]
+
+#+begin_src emacs-lisp
+(setq enable-recursive-minibuffers t)
+
+(minibuffer-depth-indicate-mode 1)
+#+end_src
+
+** History
+
+[[info:emacs#Minibuffer History][emacs#Minibuffer History]]
+
+#+begin_src emacs-lisp
+(setq history-length 1000)
+(setq history-delete-duplicates t)
+#+end_src
+
+** Savehist
+
+Save minibuffer and other "history" across Emacs restarts.
+
+#+begin_src emacs-lisp
+(use-package savehist
+  :straight nil				; Built-in package
+  :custom
+  (savehist-additional-variables '(kill-ring log-edit-comment-ring))
+  :init
+  (savehist-mode 1))
 #+end_src
 
 ** Less Garbage Collections in Minibuffer                      :experimental:
@@ -475,8 +500,67 @@ subsequent garbage collection take more time.
 #+end_src
 
 * Files
+** Auto Save
 
-** find file (or url) at point
+[[info:emacs#Auto Save Files][emacs#Auto Save Files]]
+
+Auto-save a file after typing 100 characters.
+
+#+begin_src emacs-lisp
+(setq auto-save-interval 100)
+#+end_src
+
+Do not bother us with the message ~Auto-saving...done~.
+
+#+begin_src emacs-lisp
+(setq auto-save-no-message t)
+#+end_src
+
+Store auto save files under the ~var/auto-save/~ directory, not to litter the
+working drectories.
+
+#+begin_src emacs-lisp
+(let* ((hash-algo 'sha256)
+       (base-dir (no-littering-expand-var-file-name "auto-save/"))
+       (remote-files-dir (file-name-concat base-dir "remote/"))
+       (local-files-dir (file-name-concat base-dir "local/")))
+  (setq auto-save-file-name-transforms
+	`(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,remote-files-dir ,hash-algo)
+	  (".*" ,local-files-dir ,hash-algo)))
+  (dolist (dir (list remote-files-dir local-files-dir))
+    (unless (file-directory-p dir)
+      (make-directory dir))))
+#+end_src
+
+** Backup Files
+
+[[info:emacs#Backup][emacs#Backup]]
+
+Make backups for files handled by version control (e.g. Git). 
+
+#+begin_src emacs-lisp
+(setq vc-make-backup-files t)
+#+end_src
+
+Always make numeric backup versions.
+
+#+begin_src emacs-lisp
+(setq version-control t)
+#+end_src
+
+Keep 5 most recent numeric backups of a file.
+
+#+begin_src emacs-lisp
+(setq kept-new-versions 5)
+#+end_src
+
+Delete excess backup versions silently.
+
+#+begin_src emacs-lisp
+(setq delete-old-versions t)
+#+end_src
+
+** Find File at Point
 
 Replace ~find-file~ and friends with smarter versions.
 
@@ -503,12 +587,6 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 #+end_src
 
 * Misc
-
-#+begin_src emacs-lisp
-(use-package savehist
-  :init
-  (savehist-mode))
-#+end_src
 
 Kitchen sink for the time being.
 
@@ -574,8 +652,6 @@ Kitchen sink for the time being.
 (define-key search-map "-" #'isearch-forward-symbol)
 #+end_src
 
-** History
-
 ** Xref
 
 [[info:emacs#Xref][emacs#Xref]]
@@ -598,66 +674,6 @@ Make the found definition be displayed at the top of the window:
 
 (remove-hook 'xref-after-update-hook 'recenter)
 (add-hook 'xref-after-update-hook #'my-recenter-top-1)
-#+end_src
-
-** Auto Save
-
-[[info:emacs#Auto Save Files][emacs#Auto Save Files]]
-
-Auto-save a file after typing 100 characters.
-
-#+begin_src emacs-lisp
-(setq auto-save-interval 100)
-#+end_src
-
-Do not bother us with the message ~Auto-saving...done~.
-
-#+begin_src emacs-lisp
-(setq auto-save-no-message t)
-#+end_src
-
-Store auto save files under the ~var/auto-save/~ directory, not to litter the
-working drectories.
-
-#+begin_src emacs-lisp
-(let* ((hash-algo 'sha256)
-       (base-dir (no-littering-expand-var-file-name "auto-save/"))
-       (remote-files-dir (file-name-concat base-dir "remote/"))
-       (local-files-dir (file-name-concat base-dir "local/")))
-  (setq auto-save-file-name-transforms
-	`(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,remote-files-dir ,hash-algo)
-	  (".*" ,local-files-dir ,hash-algo)))
-  (dolist (dir (list remote-files-dir local-files-dir))
-    (unless (file-directory-p dir)
-      (make-directory dir))))
-#+end_src
-
-** Backup Files
-
-[[info:emacs#Backup][emacs#Backup]]
-
-Make backups for files handled by version control (e.g. Git). 
-
-#+begin_src emacs-lisp
-(setq vc-make-backup-files t)
-#+end_src
-
-Always make numeric backup versions.
-
-#+begin_src emacs-lisp
-(setq version-control t)
-#+end_src
-
-Keep 5 most recent numeric backups of a file.
-
-#+begin_src emacs-lisp
-(setq kept-new-versions 5)
-#+end_src
-
-Delete excess backup versions silently.
-
-#+begin_src emacs-lisp
-(setq delete-old-versions t)
 #+end_src
 
 ** Help
