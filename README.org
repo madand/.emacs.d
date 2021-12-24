@@ -173,7 +173,7 @@ full support for displaying emojis. No configuration needed!
   (pcase-let ((`(,fixed-font-size ,variable-font-size) sizes))
     (set-face-font 'variable-pitch (font-spec :size variable-font-size))
     (dolist (face '(default fixed-pitch fixed-pitch-serif))
-      (set-face-font face (font-spec :size fixed-font-size)))))
+      (set-face-font face (font-spec :size fixed-font-size) (window-frame)))))
 
 (defun my-set-font-size-laptop ()
   (interactive)
@@ -182,6 +182,15 @@ full support for displaying emojis. No configuration needed!
 (defun my-set-font-size-monitor ()
   (interactive)
   (my-set-faces-font-size (plist-get my-font-sizes :monitor)))
+
+(defun my-set-font-size-monitor-function (&rest _)
+  (cond
+   ((> (cl-third (frame-monitor-geometry)) 1366)
+    (my-set-font-size-monitor))
+   (t (my-set-font-size-laptop))))
+
+(add-hook 'window-size-change-functions #'my-set-font-size-monitor-function)
+(advice-add 'load-theme :after #'my-set-font-size-monitor-function)
 #+end_src
 
 Ensure that mode line will be displayed with the fixed font size, not tied to
