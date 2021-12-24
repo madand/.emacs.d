@@ -217,15 +217,17 @@ Allow modes to display bold and/or italic text. Particularly, this makes
 websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.html][EWW]] mode look much better:
 
 #+begin_src emacs-lisp
-(set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified)
+(defun my-allow-bold-italic-variable-pitch (&rest _)
+  (set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified))
+
+(advice-add 'load-theme :after #'my-allow-bold-italic-variable-pitch)
 #+end_src
 
 ** Themes: Modus Themes
 
-#+begin_src emacs-lisp
-(setq modus-themes-operandi-color-overrides '((bg-main . "#fcfbfa")
-					      (fg-main . "#101010")))
+Use the theme ~modus-operandi~.
 
+#+begin_src emacs-lisp
 (load-theme 'modus-operandi t)
 #+end_src
 
