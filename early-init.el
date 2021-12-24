@@ -30,13 +30,15 @@
 
 ;;; Some tricks to speed the startup up
 
-;; 1 MiB between each garbage collection.
-(defconst my-gc-cons-threshold (* 1 (expt 1024 2))
-  "Value of `gc-cons-threshold' to be used after initialization.")
+;; At least 10 MiB between each garbage collection.
+(defconst my-gc-cons-threshold (* 10 (expt 1024 2))
+  "Value of `gc-cons-threshold' to be set after initialization.")
+(defconst my-gc-cons-percentage 0.05
+  "Value of `gc-cons-percentage' to be set after initialization.")
 ;; Effectively disable the garbage collector during the initialization.
 (defconst my-init-gc-cons-threshold (expt 1024 3)
   "Value of `gc-cons-threshold' during Emacs initialization.")
-(defconst my-init-gc-cons-percentage 0.8
+(defconst my-init-gc-cons-percentage 0.9
   "Value of `gc-cons-percentage' during Emacs initialization.")
 
 (let ((original-gc-cons-percentage gc-cons-percentage)
@@ -53,7 +55,7 @@
                                                (time-since before-init-time)))
                        gcs-done)
               (setq gc-cons-threshold my-gc-cons-threshold)
-              (setq gc-cons-percentage original-gc-cons-percentage)
+              (setq gc-cons-percentage my-gc-cons-percentage)
               (setq file-name-handler-alist original-file-name-handler-alist))))
 
 
