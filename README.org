@@ -446,23 +446,32 @@ Make default argument be displayed as ~[DEFAULT-ARG]~ instead of
 (setq minibuffer-eldef-shorten-default t)
 #+end_src
 
+** Less Garbage Collections in Minibuffer                      :experimental:
 
-** Minibuffer Hacks
+Tangle this only if you want to exeriment with the increased GC thresholds while
+the minibuffer is open.
 
-*** Up Directory
+May be worth it if you like to spawn numerous short living Emacs instances.
 
-#+begin_src emacs-lisp
-(defun up-directory ()
-  "Move up a directory in minibuffer without affecting the kill ring."
-  (interactive)
-  (when (string-match-p "/." (minibuffer-contents))
-    (let ((end (point)))
-      (re-search-backward "/.")
-      (forward-char)
-      (delete-region (point) end))))
+On the other hand, most likely not worth it with a single long living Emacs
+server process. Because, the heap size will grow faster, thus making every
+subsequent garbage collection take more time.
 
-(define-key minibuffer-local-filename-completion-map
-  (kbd "C-DEL") #'up-directory)
+#+begin_src emacs-lisp :tangle no
+(defvar my-gc-cons-threshold-minibuffer (* 50 (expt 1024 2)))
+(defvar my--gc-cons-threshold-original)
+
+(defun my-gc-minibuffer-setup-function ()
+  "Increase GC thresholds while the minibuffer is active."
+  (setq my--gc-cons-threshold-original gc-cons-threshold
+	gc-cons-threshold my-gc-cons-threshold-minibuffer))
+
+(defun my-gc-minibuffer-exit-function ()
+  "Reset GC thresholds after exiting the minibuffer."
+  (setq gc-cons-threshold my--gc-cons-threshold-original))
+
+(add-hook 'minibuffer-setup-hook #'my-gc-minibuffer-setup-function)
+(add-hook 'minibuffer-exit-hook #'my-gc-minibuffer-exit-function)
 #+end_src
 
 * Files
