@@ -590,8 +590,38 @@ Make the found definition be displayed at the top of the window:
 (add-hook 'xref-after-update-hook #'my-recenter-top-1)
 #+end_src
 
-** Auto Save & Backup
+** Auto Save
 
+[[info:emacs#Auto Save Files][emacs#Auto Save Files]]
+
+Auto-save a file after typing 100 characters.
+
+#+begin_src emacs-lisp
+(setq auto-save-interval 100)
+#+end_src
+
+Do not bother us with the message ~Auto-saving...done~.
+
+#+begin_src emacs-lisp
+(setq auto-save-no-message t)
+#+end_src
+
+Store auto save files under the ~var/auto-save/~ directory, not to litter the
+working drectories.
+
+#+begin_src emacs-lisp
+(let* ((hash-algo 'sha256)
+       (base-dir (no-littering-expand-var-file-name "auto-save/"))
+       (remote-files-dir (file-name-concat base-dir "remote/"))
+       (local-files-dir (file-name-concat base-dir "local/")))
+  (setq auto-save-file-name-transforms
+	`(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,remote-files-dir ,hash-algo)
+	  (".*" ,local-files-dir ,hash-algo)))
+  (dolist (dir (list remote-files-dir local-files-dir))
+    (unless (file-directory-p dir)
+      (make-directory dir))))
+#+end_src
+ 
 ** Help
 
 #+begin_src emacs-lisp
