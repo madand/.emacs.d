@@ -260,9 +260,13 @@ Display ^L glyphs as horizontal lines.
 [[info:emacs#Displaying Boundaries][emacs#Displaying Boundaries]]
 
 #+begin_src emacs-lisp
+(defvar my-toggles-map (make-sparse-keymap))
+(global-set-key (kbd "C-<f1>") my-toggles-map)
+
 (use-package display-fill-column-indicator
   :straight nil				; Built-in package
-  :hook ((prog-mode text-mode) . display-fill-column-indicator-mode))
+  :bind ( :map my-toggles-map
+	  ("f" . display-fill-column-indicator-mode)))
 #+end_src
 
 * Fundamental External Packages
@@ -604,7 +608,8 @@ Make the found definition be displayed at the top of the window:
 #+begin_src emacs-lisp
 (use-package rainbow-mode
   :bind
-  (("C-<f1> r" . rainbow-mode)))
+  ( :map my-toggles-map
+    ("r" . rainbow-mode)))
 #+end_src
 
 * Version Control
@@ -798,6 +803,18 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 
 (with-eval-after-load 'elisp-mode
     (my-elisp-setup-flet-indent))
+#+end_src
+
+** Profiler
+
+#+begin_src emacs-lisp
+(use-package profiler
+  :straight nil
+  :bind  ( :map my-toggles-map
+	   ("p p" . profiler-start)
+	   ("p r" . profiler-report)
+	   ("p o" . profiler-reset)
+	   ("p k" . profiler-stop)))
 #+end_src
 
 * Programming
