@@ -67,6 +67,13 @@ Allow native compilation to utilize all available cores.
 (setq native-comp-async-jobs-number (num-processors))
 #+end_src
 
+** Define Custom Keymaps
+
+#+begin_src emacs-lisp
+  (defvar my-toggles-map (make-sparse-keymap)
+    "Keymap for toggling stuff like minor modes.")
+#+end_src
+
 * Package Management
 
 The packages that streamline the installation and configuration of packages 📦
@@ -228,7 +235,30 @@ websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.h
 Use the theme ~modus-operandi~.
 
 #+begin_src emacs-lisp
-(load-theme 'modus-operandi t)
+(defvar my-theme-light 'modus-operandi)
+(defvar my-theme-dark 'modus-vivendi)
+(defvar my-deault-theme my-theme-light)
+
+(setq modus-themes-operandi-color-overrides
+      '((bg-main . "#ffefd5")
+	(bg-dim . "#f8e9cf")
+	(bg-alt . "#f0e1c8")))
+(load-theme my-deault-theme t)
+#+end_src
+
+Quick switching between the light and dark theme.
+
+#+begin_src emacs-lisp
+(defun my-switch-theme ()
+  (interactive)
+  (if (memq my-theme-dark custom-enabled-themes)
+      (progn
+	(disable-theme my-theme-dark)
+	(load-theme my-theme-light t))
+    (disable-theme my-theme-light)
+    (load-theme my-theme-dark t)))
+
+(define-key my-toggles-map "T" #'my-switch-theme)
 #+end_src
 
 *** TODO Make bold face bold again
@@ -269,9 +299,6 @@ Display ^L glyphs as horizontal lines.
 [[info:emacs#Displaying Boundaries][emacs#Displaying Boundaries]]
 
 #+begin_src emacs-lisp
-(defvar my-toggles-map (make-sparse-keymap))
-(global-set-key (kbd "C-<f1>") my-toggles-map)
-
 (use-package display-fill-column-indicator
   :straight nil				; Built-in package
   :bind ( :map my-toggles-map
@@ -600,6 +627,8 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 Kitchen sink for the time being.
 
 #+begin_src emacs-lisp
+(global-set-key (kbd "C-<f5>") my-toggles-map)
+
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
 (global-set-key (kbd "C-z") #'set-mark-command)
