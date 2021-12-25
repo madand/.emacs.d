@@ -861,43 +861,6 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
   :hook ((emacs-lisp-mode lisp-mode) . enable-paredit-mode))
 #+end_src
 
-** Elisp: indentation for `cl-flet' and friends
-
-[[https://emacs.stackexchange.com/a/39177]]
-
-#+begin_src emacs-lisp
-(defvar my--elisp-flet-style-macros ()
-  "List of elisp forms that should be indented like `flet'.")
-
-(defun my-elisp-flet-indent-function (indent-point state)
-  "Handle `flet'-like lists, otherwise call `lisp-indent-function'."
-  (cond
-   ((ignore-errors
-      (save-excursion
-        (backward-up-list 3)
-        (down-list)
-        (when (memq (intern (thing-at-point 'symbol))
-                    my--elisp-flet-style-macros)
-          (forward-sexp 2)
-          (>= (point) indent-point))))
-    (lisp-indent-defform state indent-point))
-   (t (lisp-indent-function indent-point state))))
-
-(defun my-elisp-setup-flet-indent ()
-  "Setup proper indentation for `cl-flet' and similar forms in elisp."
-  (setq my--elisp-flet-style-macros
-        (let ((macros '(flet flet* values macrolet labels)))
-          (append macros (mapcar (lambda (sym)
-                                   (intern (format "cl-%s" (symbol-name sym))))
-                                 macros))))
-  (dolist (macro my--elisp-flet-style-macros)
-    (put macro 'lisp-indent-function 'defun))
-  (setq lisp-indent-function #'my-elisp-flet-indent-function))
-
-(with-eval-after-load 'elisp-mode
-    (my-elisp-setup-flet-indent))
-#+end_src
-
 ** Profiler
 
 #+begin_src emacs-lisp
