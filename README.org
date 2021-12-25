@@ -682,6 +682,18 @@ Kitchen sink for the time being.
   (initial-scratch-message nil))
 #+end_src
 
+** Save Place
+
+~save-place-mode~ remembers the last point position in each visisted file,
+across Emacs restarts.
+
+#+begin_src emacs-lisp
+(use-package saveplace
+  :straight nil
+  :init
+  (save-place-mode 1))
+#+end_src
+
 ** Incremental Search (isearch)
 
 ~-~ key can be used without using ~Shift~.
