@@ -46,7 +46,7 @@
   (setq gc-cons-threshold my-init-gc-cons-threshold)
   (setq gc-cons-percentage my-init-gc-cons-percentage)
   (setq file-name-handler-alist nil)
-  
+
   (add-hook 'after-init-hook
             (defun my-set-settings-after-startup ()
               "Restore settings overridden for faster startup (GC and stuff)."

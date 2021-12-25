@@ -9,7 +9,7 @@ This is a personal configuration of [[https://www.gnu.org/software/emacs/][GNU E
 Currently, this is in WIP state, and my daily driver is still a heavily
 customized Spacemacs [[https://github.com/madand/dotemacs][setup]]; which gives me inspiration for what third party
 packages might be of use and how to build (semi-)mnemonic key bindings.
- 
+
 * Early Config
 
 This section contains stuff that must be at the very top of the init file.
@@ -241,8 +241,8 @@ Use the theme ~modus-operandi~.
 
 (setq modus-themes-operandi-color-overrides
       '((bg-main . "#ffefd5")
-	(bg-dim . "#f8e9cf")
-	(bg-alt . "#f0e1c8")))
+        (bg-dim . "#f8e9cf")
+        (bg-alt . "#f0e1c8")))
 (load-theme my-deault-theme t)
 #+end_src
 
@@ -253,8 +253,8 @@ Quick switching between the light and dark theme.
   (interactive)
   (if (memq my-theme-dark custom-enabled-themes)
       (progn
-	(disable-theme my-theme-dark)
-	(load-theme my-theme-light t))
+        (disable-theme my-theme-dark)
+        (load-theme my-theme-light t))
     (disable-theme my-theme-light)
     (load-theme my-theme-dark t)))
 
@@ -300,9 +300,9 @@ Display ^L glyphs as horizontal lines.
 
 #+begin_src emacs-lisp
 (use-package display-fill-column-indicator
-  :straight nil				; Built-in package
+  :straight nil                         ; Built-in package
   :bind ( :map my-toggles-map
-	  ("f" . display-fill-column-indicator-mode)))
+          ("f" . display-fill-column-indicator-mode)))
 #+end_src
 
 * Fundamental External Packages
@@ -387,10 +387,10 @@ Use Avy to open, copy, or take a user-defined action on “links”.
 #+begin_src emacs-lisp
 (use-package link-hint
   :bind (("C-;" . link-hint-open-link)
-	 :map Info-mode-map (";" . link-hint-open-link)
+         :map Info-mode-map (";" . link-hint-open-link)
          ;; Modes that derive from `special-mode': `eww-mode', `help-mode',
-	 ;; `magit-mode'
-	 :map special-mode-map (";" . link-hint-open-link))
+         ;; `magit-mode'
+         :map special-mode-map (";" . link-hint-open-link))
   :init
   (with-eval-after-load 'cus-edit
     (define-key custom-mode-map (kbd ";") #'link-hint-open-link))
@@ -418,7 +418,7 @@ Customize buffer:
 #+begin_src emacs-lisp
 (use-package embark
   :bind (("C-." . embark-act)
-	 ("M-." . embark-dwim)))
+         ("M-." . embark-dwim)))
 #+end_src
 
 ** Marginalia
@@ -500,7 +500,7 @@ Save minibuffer and other "history" across Emacs restarts.
 
 #+begin_src emacs-lisp
 (use-package savehist
-  :straight nil				; Built-in package
+  :straight nil                         ; Built-in package
   :custom
   (savehist-additional-variables '(kill-ring log-edit-comment-ring))
   :init
@@ -525,7 +525,7 @@ subsequent garbage collection take more time.
 (defun my-gc-minibuffer-setup-function ()
   "Increase GC thresholds while the minibuffer is active."
   (setq my--gc-cons-threshold-original gc-cons-threshold
-	gc-cons-threshold my-gc-cons-threshold-minibuffer))
+        gc-cons-threshold my-gc-cons-threshold-minibuffer))
 
 (defun my-gc-minibuffer-exit-function ()
   "Reset GC thresholds after exiting the minibuffer."
@@ -561,8 +561,8 @@ working drectories.
        (remote-files-dir (file-name-concat base-dir "remote/"))
        (local-files-dir (file-name-concat base-dir "local/")))
   (setq auto-save-file-name-transforms
-	`(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,remote-files-dir ,hash-algo)
-	  (".*" ,local-files-dir ,hash-algo)))
+        `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,remote-files-dir ,hash-algo)
+          (".*" ,local-files-dir ,hash-algo)))
   (dolist (dir (list remote-files-dir local-files-dir))
     (unless (file-directory-p dir)
       (make-directory dir))))
@@ -572,7 +572,7 @@ working drectories.
 
 [[info:emacs#Backup][emacs#Backup]]
 
-Make backups for files handled by version control (e.g. Git). 
+Make backups for files handled by version control (e.g. Git).
 
 #+begin_src emacs-lisp
 (setq vc-make-backup-files t)
@@ -664,7 +664,7 @@ Kitchen sink for the time being.
 
 (use-package mwim
   :bind (("C-a" . mwim-beginning)
-	 ("C-e" . mwim-end)))
+         ("C-e" . mwim-end)))
 #+end_src
 
 ** Startup
@@ -791,7 +791,7 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
          ("C-c a" . org-agenda)
          :map org-mode-map
          ("<f2>" . org-edit-special)
-	 ("C-c C-j" . consult-org-heading)
+         ("C-c C-j" . consult-org-heading)
          :map org-src-mode-map
          ("<f2>" . org-edit-src-exit)))
 #+end_src
@@ -896,10 +896,10 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 (use-package profiler
   :straight nil
   :bind  ( :map my-toggles-map
-	   ("p p" . profiler-start)
-	   ("p r" . profiler-report)
-	   ("p o" . profiler-reset)
-	   ("p k" . profiler-stop)))
+           ("p p" . profiler-start)
+           ("p r" . profiler-report)
+           ("p o" . profiler-reset)
+           ("p k" . profiler-stop)))
 #+end_src
 
 * Programming
