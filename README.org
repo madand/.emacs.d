@@ -328,7 +328,7 @@ See also `my-quick-select-keys'.")
   :custom
   (avy-keys my-quick-select-keys)
   (avy-dispatch-alist my-avy-dispatch-alist)
-  (avy-timeout-seconds 0.4)
+  (avy-timeout-seconds 0.3)
   (avy-background t)
   (avy-single-candidate-jump nil)
   :bind (("M-o" . avy-goto-char-timer)
