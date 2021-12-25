@@ -231,6 +231,15 @@ Use the theme ~modus-operandi~.
 (load-theme 'modus-operandi t)
 #+end_src
 
+*** TODO Make bold face bold again
+
+I disabled the bold face impact by setting ith ~:weight~ to ~normal~. Because
+Iosevka does not look good in bold variant on my oldy monitor.
+
+Modus themes make quite a few faces inhert from ~bold~. Need to figure out the
+way to enusre that fixed pitch text is never bold, while allowing it for the
+~variable-pitch~ stuff like in [[info:eww#Top][EWW]].
+
 ** text-scale+
 
 [[https://github.com/madand/text-scale-plus.el]]
