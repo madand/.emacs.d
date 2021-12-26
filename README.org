@@ -53,8 +53,7 @@ The heading part of the tangled ~init.el~ file.
 
 #+begin_src emacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
+(load custom-file :no-error)
 #+end_src
 
 ** Native Compilation
@@ -240,8 +239,8 @@ Configure the theme ~modus-operandi~.
   :no-require t
   :custom
   (modus-themes-operandi-color-overrides '((bg-main . "#fdf8eb")
-					   (bg-dim . "#f6f1e5")
-					   (bg-alt . "#eeeadd")))
+                                           (bg-dim . "#f6f1e5")
+                                           (bg-alt . "#eeeadd")))
   (modus-themes-vivendi-color-overrides '((fg-main . "#ebebeb"))))
 #+end_src
 
@@ -934,7 +933,7 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 #+begin_src emacs-lisp
 (use-package macrostep
   :bind ( :map emacs-lisp-mode-map
-	  ("C-c e" . macrostep-expand)))
+          ("C-c e" . macrostep-expand)))
 #+end_src
 
 * Programming
@@ -944,6 +943,50 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 #+begin_src emacs-lisp
 (use-package web-mode)
 #+end_src
+
+* Staging
+
+** hideshow-mode
+
+[[https://karthinks.com/software/simple-folding-with-hideshow/]]
+
+#+begin_src emacs-lisp
+(require 'hideshow)
+(defun hs-cycle (&optional level)
+  (interactive "p")
+  (let (message-log-max
+        (inhibit-message t))
+    (if (= level 1)
+        (pcase last-command
+          ('hs-cycle
+           (hs-hide-level 1)
+           (setq this-command 'hs-cycle-children))
+          ('hs-cycle-children
+           ;; TODO: Fix this case. `hs-show-block' needs to be
+           ;; called twice to open all folds of the parent
+           ;; block.
+           (save-excursion (hs-show-block))
+           (hs-show-block)
+           (setq this-command 'hs-cycle-subtree))
+          ('hs-cycle-subtree
+           (hs-hide-block))
+          (_
+           (if (not (hs-already-hidden-p))
+               (hs-hide-block)
+             (hs-hide-level 1)
+             (setq this-command 'hs-cycle-children))))
+      (hs-hide-level level)
+      (setq this-command 'hs-hide-level))))
+
+(defun hs-global-cycle ()
+    (interactive)
+    (pcase last-command
+      ('hs-global-cycle
+       (save-excursion (hs-show-all))
+       (setq this-command 'hs-global-show))
+      (_ (hs-hide-all))))
+#+end_src
+
 
 * License
 
