@@ -232,21 +232,34 @@ websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.h
 
 ** Themes: Modus Themes
 
-Use the theme ~modus-operandi~.
+Configure the theme ~modus-operandi~.
+
+#+begin_src emacs-lisp
+(use-package modus-themes
+  :straight nil
+  :no-require t
+  :custom
+  (modus-themes-operandi-color-overrides '((bg-main . "#fdf8eb")
+					   (bg-dim . "#f6f1e5")
+					   (bg-alt . "#eeeadd")))
+  (modus-themes-vivendi-color-overrides '((fg-main . "#ebebeb"))))
+#+end_src
+
+Define the preferred theme variables.
 
 #+begin_src emacs-lisp
 (defvar my-theme-light 'modus-operandi)
 (defvar my-theme-dark 'modus-vivendi)
 (defvar my-deault-theme my-theme-light)
+#+end_src
 
-(setq modus-themes-operandi-color-overrides
-      '((bg-main . "#ffefd5")
-        (bg-dim . "#f8e9cf")
-        (bg-alt . "#f0e1c8")))
+Load the preferred theme.
+
+#+begin_src emacs-lisp
 (load-theme my-deault-theme t)
 #+end_src
 
-Quick switching between the light and dark theme.
+Imlement quick switching between the light and dark themes.
 
 #+begin_src emacs-lisp
 (defun my-switch-theme ()
