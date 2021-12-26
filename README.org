@@ -927,6 +927,16 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
            ("p k" . profiler-stop)))
 #+end_src
 
+** macrostep: interactive macro-expander
+
+[[https://github.com/joddie/macrostep]]
+
+#+begin_src emacs-lisp
+(use-package macrostep
+  :bind ( :map emacs-lisp-mode-map
+	  ("C-c e" . macrostep-expand)))
+#+end_src
+
 * Programming
 
 ** Web Mode
