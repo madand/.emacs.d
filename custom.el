@@ -35,7 +35,8 @@
  '(use-dialog-box nil)
  '(use-short-answers t)
  '(visible-bell t)
- '(x-select-enable-clipboard-manager nil))
+ '(x-select-enable-clipboard-manager nil)
+ '(y-or-n-p-use-read-key t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
