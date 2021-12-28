@@ -308,6 +308,68 @@ Display ^L glyphs as horizontal lines.
           ("f" . display-fill-column-indicator-mode)))
 #+end_src
 
+** Whitespace
+
+[[info:emacs#Useless Whitespace][emacs#Useless Whitespace]]
+
+*** show-trailing-whitespace
+
+Emacs provides a (buffer-local) varirble ~show-trailing-whitespace~ to control the
+displaying of the trailing whitespace. Here we define simple minor mode that
+will set the said varirble on or off for us.
+
+#+begin_src emacs-lisp
+(define-minor-mode my-show-trailing-whitespace-mode
+  "Toggle trailing whitespace visualization (Trailing Whitespace mode).
+
+See a variable `show-trailing-whitespace'."
+  :lighter nil
+  :init-value nil
+  :global nil
+  (setq show-trailing-whitespace my-show-trailing-whitespace-mode))
+#+end_src
+
+Now let's bind the newly defined minor mode to a keybinding.
+
+#+begin_src emacs-lisp
+(define-key my-toggles-map "w" #'my-show-trailing-whitespace-mode)
+#+end_src
+
+Automatically show trailing whitespace in programming, text and Org mode.
+
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook #'my-show-trailing-whitespace-mode)
+(add-hook 'text-mode-hook #'my-show-trailing-whitespace-mode)
+(add-hook 'org-mode-hook #'my-show-trailing-whitespace-mode)
+#+end_src
+
+*** whitespace-mode
+
+~whitespace-mode~ visually displays ALL kinds of whitespace characters: spaces,
+tabs, newlines etc.
+
+#+begin_src emacs-lisp
+(use-package whitespace
+  :straight nil
+  :bind (:map my-toggles-map ("W" . whitespace-mode)))
+#+end_src
+
+*** ws-butler
+
+[[https://github.com/lewang/ws-butler]]
+
+An unobtrusive way to trim spaces from end of line.
+
+- Only lines touched get trimmed. If the white space at end of buffer is changed,
+  then blank lines at the end of buffer are truncated respecting
+  ~require-final-newline~.
+- Trimming only happens when saving.
+
+#+begin_src emacs-lisp
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
+#+end_src
+
 * Fundamental External Packages
 
 Third-party packages that are fundamental for my setup. They might improve your
