@@ -159,6 +159,14 @@ Mode Line.
 (use-package delight)
 #+end_src
 
+** el-patch
+
+[[https://github.com/raxod502/el-patch]]
+
+#+begin_src emacs-lisp
+(use-package el-patch)
+#+end_src
+
 * Display
 
 ** Fonts
@@ -835,6 +843,24 @@ Some conveniences for working with Elisp code blocks.
 
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "<f5>") #'my-org-eval-defun))
+#+end_src
+
+* EWW
+
+#+begin_src emacs-lisp
+(el-patch-feature shr)
+(with-eval-after-load 'shr
+  (el-patch-defun shr-add-font (start end type)
+    (save-excursion
+      (goto-char start)
+      (while (< (point) end)
+	(when (bolp)
+          (skip-chars-forward " "))
+	(add-face-text-property (point) (min (line-end-position) end) type
+				(el-patch-swap t nil))
+	(if (< (line-end-position) end)
+            (forward-line 1)
+          (goto-char end))))))
 #+end_src
 
 * Autotyping
