@@ -49,6 +49,19 @@ The heading part of the tangled ~init.el~ file.
 ;;; Code:
 #+end_src
 
+** Init File Comilation
+
+This function must be at the very top, so we can still re-tangle and re-compile,
+in the event that later parts of the init file signalled an error.
+
+#+begin_src emacs-lisp
+(defun my-compile-init-file ()
+  "Byte and native (re)compile the Emacs init file (init.el)."
+  (let ((init-file (expand-file-name "init.el" user-emacs-directory)))
+    (byte-recompile-file init-file nil 0)
+    (native-compile init-file)))
+#+end_src
+
 ** Custom Settings in a Separate File
 
 #+begin_src emacs-lisp
@@ -993,14 +1006,6 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 GNU GPLv3.
 
 * Epilogue
-
-#+begin_src emacs-lisp
-(defun my-compile-init-file ()
-  "Byte and native (re)compile the Emacs init file (init.el)."
-  (let ((init-file (expand-file-name "init.el" user-emacs-directory)))
-    (byte-recompile-file init-file nil 0)
-    (native-compile init-file)))
-#+end_src
 
 File-local variables defined here make Emacs (re)tangle and then (re)compile the
 init file (~init.el~), whenever this file is saved.
