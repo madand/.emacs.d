@@ -11,6 +11,13 @@
  '(buffer-auto-revert-by-notification t t)
  '(completion-ignore-case t t)
  '(create-lockfiles nil)
+ '(dired-auto-revert-buffer t)
+ '(dired-do-revert-buffer t)
+ '(dired-dwim-target 'dired-dwim-target-recent)
+ '(dired-guess-shell-alist-user '(("\\.\\(mkv\\|mp4\\|mpg\\|vob\\|avi\\)\\'" "mpv")))
+ '(dired-isearch-filenames 'dwim)
+ '(dired-listing-switches "-alh")
+ '(dired-mode-hook '(dired-extra-startup dired-hide-details-mode))
  '(ediff-split-window-function 'split-window-horizontally)
  '(ediff-window-setup-function 'ediff-setup-windows-plain)
  '(global-auto-revert-non-file-buffers t)
@@ -18,11 +25,18 @@
  '(ielm-header "" t)
  '(ielm-mode-hook '(eldoc-mode))
  '(ielm-prompt "λ> ")
+ '(indent-tabs-mode nil)
+ '(isearch-lazy-count t)
+ '(magit-diff-highlight-hunk-region-functions
+   '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-overlays))
+ '(orderless-component-separator " +\\|[-/]")
+ '(orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism))
+ '(org-agenda-files '("~/.emacs.d/README.org"))
+ '(org-hide-emphasis-markers t)
  '(org-src-window-setup 'current-window)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
  '(recentf-max-saved-items nil)
- '(recentf-mode t)
  '(require-final-newline t)
  '(safe-local-variable-values
    '((common-lisp-style . modern)
@@ -31,15 +45,17 @@
      (eval add-hook 'after-save-hook #'my-compile-init-file 91 t)
      (eval add-hook 'after-save-hook #'org-babel-tangle 90 t)))
  '(scroll-margin 1)
+ '(shr-bullet "• ")
  '(shr-image-animate nil)
  '(use-dialog-box nil)
  '(use-short-answers t)
  '(visible-bell t)
  '(x-select-enable-clipboard-manager nil)
- '(y-or-n-p-use-read-key t))
+ '(y-or-n-p-use-read-key t t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bold ((t (:weight normal)))))
+ '(bold ((t (:weight extra-bold))))
+ '(variable-pitch ((t (:height 196 :width normal :foundry "GOOG" :family "Noto Serif")))))
