@@ -82,8 +82,8 @@ Allow native compilation to utilize all available cores.
 ** Define Custom Keymaps
 
 #+begin_src emacs-lisp
-  (defvar my-toggles-map (make-sparse-keymap)
-    "Keymap for toggling stuff like minor modes.")
+(defvar my-toggles-map (make-sparse-keymap)
+  "Keymap for toggling stuff like minor modes.")
 #+end_src
 
 * Package Management
@@ -186,13 +186,14 @@ full support for displaying emojis. No configuration needed!
 *** Font Size
 
 #+begin_src emacs-lisp
-(defvar my-font-sizes '(:laptop (16 20) :monitor (21 26)))
+(defvar my-font-sizes '( :laptop (16 . 20)
+                         :monitor (21 . 26)))
 
-(defun my-set-faces-font-size (sizes)
-  (pcase-let ((`(,fixed-font-size ,variable-font-size) sizes))
-    (set-face-font 'variable-pitch (font-spec :size variable-font-size))
+(defun my-set-faces-font-size (font-sizes)
+  (pcase-let ((`(,fixed-size . ,variable-size) font-sizes))
+    (set-face-font 'variable-pitch (font-spec :size variable-size) (window-frame))
     (dolist (face '(default fixed-pitch fixed-pitch-serif))
-      (set-face-font face (font-spec :size fixed-font-size) (window-frame)))))
+      (set-face-font face (font-spec :size fixed-size) (window-frame)))))
 
 (defun my-set-font-size-laptop ()
   (interactive)
@@ -202,14 +203,14 @@ full support for displaying emojis. No configuration needed!
   (interactive)
   (my-set-faces-font-size (plist-get my-font-sizes :monitor)))
 
-(defun my-set-font-size-monitor-function (&rest _)
+(defun my-update-font-size-for-monitor-function (&rest _)
   (cond
    ((> (cl-third (frame-monitor-geometry)) 1366)
     (my-set-font-size-monitor))
    (t (my-set-font-size-laptop))))
 
-(add-hook 'window-size-change-functions #'my-set-font-size-monitor-function)
-(advice-add 'load-theme :after #'my-set-font-size-monitor-function)
+(add-hook 'window-size-change-functions #'my-update-font-size-for-monitor-function)
+(advice-add 'load-theme :after #'my-update-font-size-for-monitor-function)
 #+end_src
 
 Ensure that mode line will be displayed with the fixed font size, not tied to
@@ -230,70 +231,39 @@ the font size of the ~default~ face.
 (advice-add 'load-theme :after #'my-set-mode-line-font-face)
 #+end_src
 
-*** Miscellaneous Font Configuration
-
-Allow modes to display bold and/or italic text. Particularly, this makes
-websites rendered in [[https://www.gnu.org/software/emacs/manual/html_mono/eww.html][EWW]] mode look much better:
-
-#+begin_src emacs-lisp
-(defun my-allow-bold-italic-variable-pitch (&rest _)
-  (set-face-attribute 'variable-pitch nil :slant 'unspecified :weight 'unspecified))
-
-(advice-add 'load-theme :after #'my-allow-bold-italic-variable-pitch)
-#+end_src
-
 ** Themes: Modus Themes
-
-Configure the theme ~modus-operandi~.
+- [[https://protesilaos.com/emacs/modus-themes]]
+- [[info:modus-themes#Top][modus-themes#Top]]
 
 #+begin_src emacs-lisp
 (use-package modus-themes
   :straight nil
   :no-require t
+  :bind (:map my-toggles-map ("T" . modus-themes-toggle))
   :custom
+  ;; Use lightened variant of the Solarized Light background color (yellowish),
+  ;; instead of pure white.
   (modus-themes-operandi-color-overrides '((bg-main . "#fdf8eb")
                                            (bg-dim . "#f6f1e5")
                                            (bg-alt . "#eeeadd")))
-  (modus-themes-vivendi-color-overrides '((fg-main . "#ebebeb"))))
+
+  ;; Use light-grey as the default text color, instead of pure white.
+  (modus-themes-vivendi-color-overrides '((fg-main . "#ebebeb")))
+
+  ;; Other theme customizatins (peronal preferences).
+  (modus-themes-bold-constructs t)
+  (modus-themes-diffs 'desaturated)
+  (modus-themes-mode-line '(borderless))
+  (modus-themes-org-blocks 'gray-background)
+  (modus-themes-prompts '(gray))
+  (modus-themes-region '(no-extend bg-only))
+  (modus-themes-scale-headings t)
+  (modus-themes-subtle-line-numbers t)
+  (modus-themes-syntax '(faint))
+  (modus-themes-variable-pitch-headings t)
+  :init
+  (load-theme 'modus-operandi t))
 #+end_src
-
-Define the preferred theme variables.
-
-#+begin_src emacs-lisp
-(defvar my-theme-light 'modus-operandi)
-(defvar my-theme-dark 'modus-vivendi)
-(defvar my-deault-theme my-theme-light)
-#+end_src
-
-Load the preferred theme.
-
-#+begin_src emacs-lisp
-(load-theme my-deault-theme t)
-#+end_src
-
-Imlement quick switching between the light and dark themes.
-
-#+begin_src emacs-lisp
-(defun my-switch-theme ()
-  (interactive)
-  (if (memq my-theme-dark custom-enabled-themes)
-      (progn
-        (disable-theme my-theme-dark)
-        (load-theme my-theme-light t))
-    (disable-theme my-theme-light)
-    (load-theme my-theme-dark t)))
-
-(define-key my-toggles-map "T" #'my-switch-theme)
-#+end_src
-
-*** TODO Make bold face bold again
-
-I disabled the bold face impact by setting ith ~:weight~ to ~normal~. Because
-Iosevka does not look good in bold variant on my oldy monitor.
-
-Modus themes make quite a few faces inhert from ~bold~. Need to figure out the
-way to enusre that fixed pitch text is never bold, while allowing it for the
-~variable-pitch~ stuff like in [[info:eww#Top][EWW]].
 
 ** text-scale+
 
@@ -336,7 +306,7 @@ Third-party packages that are fundamental for my setup. They might improve your
 Emacs workflow in major ways. Moreover, they synergize with each other!
 
 #+begin_src emacs-lisp
-(defvar my-quick-select-keys '(?n ?o ?e ?t ?a ?i ?r ?h)
+(defvar my-quick-select-keys '(?r ?a ?e ?n ?o ?t ?i ?h)
   "Keys for performing quick selections/jumps with tools like Avy.")
 #+end_src
 
@@ -390,7 +360,7 @@ See also `my-quick-select-keys'.")
 *** Avy Embark Integration
 
 #+begin_src emacs-lisp
-(defun my-avy-action-embark (pt)
+(defun my-avy-action-embark-stay (pt)
   (unwind-protect
       (save-excursion
         (goto-char pt)
@@ -399,8 +369,13 @@ See also `my-quick-select-keys'.")
      (cdr (ring-ref avy-ring 0))))
   t)
 
+(defun my-avy-action-embark-move (pt)
+  (goto-char pt)
+  (embark-act))
+
 (with-eval-after-load 'avy
-  (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark))
+  (setf (alist-get ?. avy-dispatch-alist) #'my-avy-action-embark-stay)
+  (setf (alist-get ?, avy-dispatch-alist) #'my-avy-action-embark-move))
 #+end_src
 
 ** link-hint
@@ -460,14 +435,15 @@ Customize buffer:
 
 ** Orderless
 
-[[https://github.com/oantolin/orderless]]
+- [[https://github.com/oantolin/orderless]]
+- aenc
 
 #+begin_src emacs-lisp
 (use-package orderless
   :custom
   (completion-styles '(orderless))
   (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-category-overrides '((file (styles partial-completion orderless)))))
 #+end_src
 
 ** Vertico
@@ -530,34 +506,6 @@ Save minibuffer and other "history" across Emacs restarts.
   (savehist-additional-variables '(kill-ring log-edit-comment-ring))
   :init
   (savehist-mode 1))
-#+end_src
-
-** Less Garbage Collections in Minibuffer                      :experimental:
-
-Tangle this only if you want to exeriment with the increased GC thresholds while
-the minibuffer is open.
-
-May be worth it if you like to spawn numerous short living Emacs instances.
-
-On the other hand, most likely not worth it with a single long living Emacs
-server process. Because, the heap size will grow faster, thus making every
-subsequent garbage collection take more time.
-
-#+begin_src emacs-lisp :tangle no
-(defvar my-gc-cons-threshold-minibuffer (* 50 (expt 1024 2)))
-(defvar my--gc-cons-threshold-original)
-
-(defun my-gc-minibuffer-setup-function ()
-  "Increase GC thresholds while the minibuffer is active."
-  (setq my--gc-cons-threshold-original gc-cons-threshold
-        gc-cons-threshold my-gc-cons-threshold-minibuffer))
-
-(defun my-gc-minibuffer-exit-function ()
-  "Reset GC thresholds after exiting the minibuffer."
-  (setq gc-cons-threshold my--gc-cons-threshold-original))
-
-(add-hook 'minibuffer-setup-hook #'my-gc-minibuffer-setup-function)
-(add-hook 'minibuffer-exit-hook #'my-gc-minibuffer-exit-function)
 #+end_src
 
 * Files
@@ -637,6 +585,14 @@ When a file is opened read-only, enable ~view-mode~.
 
 (advice-add 'ffap-read-only :after #'my-turn-on-view-mode)
 (advice-add 'ffap-read-only-other-window :after #'my-turn-on-view-mode)
+#+end_src
+
+** recentf
+
+#+begin_src emacs-lisp
+(use-package recentf
+  :straight nil
+  :init (recentf-mode 1))
 #+end_src
 
 * Frames
@@ -759,7 +715,10 @@ Make the found definition be displayed at the top of the window:
   :custom
   (help-window-select t)
   :bind
-  (("C-h C-l" . find-library)))
+  (("C-h C-l" . find-library)
+   :map help-mode-map
+   ("n" . forward-button)
+   ("p" . backward-button)))
 #+end_src
 
 ** rainbow-mode
@@ -771,6 +730,15 @@ Make the found definition be displayed at the top of the window:
     ("r" . rainbow-mode)))
 #+end_src
 
+** Dired
+
+#+begin_src emacs-lisp
+(use-package dired
+  :straight nil
+  :config
+  (require 'dired-x))
+#+end_src
+
 * Version Control
 ** Magit
 
@@ -779,6 +747,8 @@ Make the found definition be displayed at the top of the window:
 #+begin_src emacs-lisp
 (use-package magit
   :defer t
+  :custom
+  (magit-diff-refine-hunk 'all)
   :init
   (setq magit-define-global-key-bindings t))
 #+end_src
@@ -823,14 +793,15 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 (use-package org
   :custom
   (org-edit-src-content-indentation 0)
-  :bind (("C-c l" . org-store-link)
-         ("C-c c" . org-capture)
-         ("C-c a" . org-agenda)
-         :map org-mode-map
-         ("<f2>" . org-edit-special)
-         ("C-c C-j" . consult-org-heading)
-         :map org-src-mode-map
-         ("<f2>" . org-edit-src-exit)))
+  :bind
+  (("C-c l" . org-store-link)
+   ("C-c c" . org-capture)
+   ("C-c a" . org-agenda)
+   :map org-mode-map
+   ("<f2>" . org-edit-special)
+   ("C-c C-j" . consult-org-heading)
+   :map org-src-mode-map
+   ("<f2>" . org-edit-src-exit)))
 #+end_src
 
 ** Emacs Lisp in Org
