@@ -50,6 +50,11 @@
  '(use-dialog-box nil)
  '(use-short-answers t)
  '(visible-bell t)
+ '(which-key-idle-delay 0.8)
+ '(which-key-idle-secondary-delay 0.3)
+ '(which-key-max-description-length nil)
+ '(which-key-side-window-location '(right bottom))
+ '(which-key-side-window-max-width 0.4)
  '(x-select-enable-clipboard-manager nil)
  '(y-or-n-p-use-read-key t t))
 (custom-set-faces

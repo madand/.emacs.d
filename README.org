@@ -167,6 +167,19 @@ Mode Line.
 (use-package el-patch)
 #+end_src
 
+* Key Bindings
+
+** which-key
+
+[[https://github.com/justbur/emacs-which-key]]
+
+#+begin_src emacs-lisp
+(use-package which-key
+  :init
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
+#+end_src
+
 * Display
 
 ** Fonts
