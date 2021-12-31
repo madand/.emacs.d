@@ -380,7 +380,8 @@ An unobtrusive way to trim spaces from end of line.
 
 #+begin_src emacs-lisp
 (use-package ws-butler
-  :hook (prog-mode . ws-butler-mode))
+  :delight ws-butler-mode
+  :hook ((prog-mode text-mode org-mode) . ws-butler-mode))
 #+end_src
 
 ** pulse
@@ -1023,8 +1024,21 @@ Some conveniences for working with Elisp code blocks.
 ** Abbrev Mode
 
 #+begin_src emacs-lisp
-(dolist (hook '(text-mode-hook prog-mode-hook))
-  (add-hook hook #'abbrev-mode))
+(use-package abbrev
+  :straight nil
+  :delight abbrev-mode
+  :init
+  (dolist (hook '(text-mode-hook prog-mode-hook org-mode-hook))
+    (add-hook hook #'abbrev-mode)))
+#+end_src
+
+** Auto Revert
+
+[[info:emacs#Auto Revert][emacs#Auto Revert]]
+
+#+begin_src emacs-lisp
+(use-package autorevert
+  :delight auto-revert-mode)
 #+end_src
 
 ** Hippie Expand
