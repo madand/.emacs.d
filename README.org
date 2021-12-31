@@ -548,11 +548,26 @@ Customize buffer:
 
 #+begin_src emacs-lisp
 (use-package vertico
+  :custom
+  (vertico-scroll-margin 1)
+  (vertico-count 16)
+  (vertico-cycle t)
   :init
   (vertico-mode)
-  (setq vertico-scroll-margin 1)
-  (setq vertico-count 16)
-  (setq vertico-cycle t))
+  :config
+  ;; This package is a Vertico extension, which prefixes candidates with
+  ;; indices and allows selection using prefix arguments.
+  (require 'vertico-indexed "extensions/vertico-indexed")
+  (with-eval-after-load 'vertico-indexed
+    (vertico-indexed-mode 1))
+  ;; This package is a Vertico extension, which provides quick keys.
+  (require 'vertico-quick "extensions/vertico-quick")
+  (with-eval-after-load 'vertico-quick
+    (setq vertico-quick1 "raenot"
+          vertico-quick2 "ih")
+    (define-key vertico-map (kbd "C-;") #'vertico-quick-exit)
+    (define-key vertico-map (kbd "M-;") #'vertico-quick-jump)
+    (define-key vertico-map (kbd "C-M-;") #'vertico-quick-insert)))
 #+end_src
 
 ** Consult
