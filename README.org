@@ -383,6 +383,18 @@ An unobtrusive way to trim spaces from end of line.
   :hook (prog-mode . ws-butler-mode))
 #+end_src
 
+** pulse
+
+#+begin_src emacs-lisp
+(defun pulse-line (&rest _)
+      "Pulse the current line."
+      (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command scroll-down-command
+                   recenter-top-bottom other-window))
+  (advice-add command :after #'pulse-line))
+#+end_src
+
 * Fundamental External Packages
 
 Third-party packages that are fundamental for my setup. They might improve your
