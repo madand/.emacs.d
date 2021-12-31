@@ -49,7 +49,7 @@ The heading part of the tangled ~init.el~ file.
 ;;; Code:
 #+end_src
 
-** Init File Comilation
+** Init File Compilation
 
 This function must be at the very top, so we can still re-tangle and re-compile,
 in the event that later parts of the init file signalled an error.
@@ -813,6 +813,7 @@ Kitchen sink for the time being.
   :no-require t
   :custom
   (initial-buffer-choice (expand-file-name "README.org" user-emacs-directory))
+  (initial-major-mode 'emacs-lisp-mode)
   (inhibit-default-init t)
   (inhibit-startup-screen t)
   (inhibit-startup-echo-area-message t)
@@ -941,7 +942,10 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 (global-set-key (kbd "<f12>") #'widen)
 #+end_src
 
-* Org Mode
+
+* Org
+
+** Org Mode
 
 [[https://orgmode.org/]]
 [[info:org#Top][Org Info Manual]]
