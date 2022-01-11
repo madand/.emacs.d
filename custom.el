@@ -35,6 +35,7 @@
  '(orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism))
  '(org-agenda-files '("~/.emacs.d/README.org"))
  '(org-hide-emphasis-markers t)
+ '(org-roam-completion-everywhere t)
  '(org-src-window-setup 'current-window)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)

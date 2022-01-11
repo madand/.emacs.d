@@ -1073,6 +1073,21 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
    ("<f2>" . org-edit-src-exit)))
 #+end_src
 
+** Org roam
+
+[[https://www.orgroam.com/]]
+
+#+begin_src emacs-lisp
+(use-package org-roam
+  :custom
+  (org-roam-db-autosync-mode t)
+  :bind (("C-c n n" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n l" . org-roam-buffer-toggle))
+  :init
+  (setq org-roam-v2-ack t))
+#+end_src
+
 ** Emacs Lisp in Org
 
 Some conveniences for working with Elisp code blocks.
