@@ -10,6 +10,96 @@ Currently, this is in WIP state, and my daily driver is still a heavily
 customized Spacemacs [[https://github.com/madand/dotemacs][setup]]; which gives me inspiration for what third party
 packages might be of use and how to build (semi-)mnemonic key bindings.
 
+* Table of Contents                                                     :TOC:
+- [[#early-config][Early Config]]
+  - [[#preamble][Preamble]]
+  - [[#init-file-compilation][Init File Compilation]]
+  - [[#custom-settings-in-a-separate-file][Custom Settings in a Separate File]]
+  - [[#native-compilation][Native Compilation]]
+  - [[#define-custom-keymaps][Define Custom Keymaps]]
+- [[#package-management][Package Management]]
+  - [[#straightel][straight.el]]
+  - [[#use-package][use-package]]
+  - [[#no-littering][no-littering]]
+  - [[#delight][delight]]
+  - [[#el-patch][el-patch]]
+- [[#key-bindings][Key Bindings]]
+  - [[#generalel][general.el]]
+  - [[#global-key-bindings][Global Key Bindings]]
+  - [[#which-key][which-key]]
+- [[#display][Display]]
+  - [[#fonts][Fonts]]
+  - [[#themes-modus-themes][Themes: Modus Themes]]
+  - [[#text-scale][text-scale+]]
+  - [[#form-feed][form-feed]]
+  - [[#display-fill-column-indicator][display-fill-column-indicator]]
+  - [[#whitespace][Whitespace]]
+  - [[#pulse][pulse]]
+- [[#fundamental-external-packages][Fundamental External Packages]]
+  - [[#avy][Avy]]
+  - [[#link-hint][link-hint]]
+  - [[#embark][Embark]]
+  - [[#marginalia][Marginalia]]
+  - [[#orderless][Orderless]]
+  - [[#vertico][Vertico]]
+  - [[#consult][Consult]]
+  - [[#popper][Popper]]
+- [[#minibuffer][Minibuffer]]
+  - [[#recursive-minibuffers][Recursive Minibuffers]]
+  - [[#history][History]]
+  - [[#savehist][Savehist]]
+- [[#files][Files]]
+  - [[#auto-save][Auto Save]]
+  - [[#backup-files][Backup Files]]
+  - [[#find-file-at-point][Find File at Point]]
+  - [[#recentf][recentf]]
+- [[#frames][Frames]]
+- [[#misc][Misc]]
+  - [[#enable-all-disabled-commands][Enable all disabled commands]]
+  - [[#undoredo][Undo/Redo]]
+  - [[#ytdl][ytdl]]
+  - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
+  - [[#startup][Startup]]
+  - [[#save-place][Save Place]]
+  - [[#incremental-search-isearch][Incremental Search (isearch)]]
+  - [[#xref][Xref]]
+  - [[#help][Help]]
+  - [[#rainbow-mode][rainbow-mode]]
+  - [[#dired][Dired]]
+  - [[#iedit][iedit]]
+  - [[#visual-fill-column-mode][visual-fill-column-mode]]
+  - [[#novel---epub-reader][nov.el - EPUB Reader]]
+- [[#version-control][Version Control]]
+  - [[#magit][Magit]]
+  - [[#vc][vc]]
+- [[#international][International]]
+  - [[#language-environments][Language Environments]]
+- [[#narrowing][Narrowing]]
+- [[#org][Org]]
+  - [[#org-mode][Org Mode]]
+  - [[#org-roam][Org roam]]
+  - [[#toc-org][toc-org]]
+  - [[#emacs-lisp-in-org][Emacs Lisp in Org]]
+- [[#eww][EWW]]
+- [[#autotyping][Autotyping]]
+  - [[#abbrev-mode][Abbrev Mode]]
+  - [[#auto-revert][Auto Revert]]
+  - [[#hippie-expand][Hippie Expand]]
+- [[#lisp][Lisp]]
+  - [[#lisp-extra-font-lock][lisp-extra-font-lock]]
+  - [[#paredit][paredit]]
+  - [[#profiler][Profiler]]
+  - [[#macrostep-interactive-macro-expander][macrostep: interactive macro-expander]]
+- [[#clojure][Clojure]]
+  - [[#cider][Cider]]
+- [[#programming][Programming]]
+  - [[#web-mode][Web Mode]]
+- [[#staging][Staging]]
+  - [[#hideshow-mode][hideshow-mode]]
+  - [[#minibuffer-and-completions-in-tandem-mct][Minibuffer and Completions in Tandem (mct)]]
+- [[#license][License]]
+- [[#epilogue][Epilogue]]
+
 * Early Config
 
 This section contains stuff that must be at the very top of the init file.
@@ -1086,6 +1176,16 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
          ("C-c n l" . org-roam-buffer-toggle))
   :init
   (setq org-roam-v2-ack t))
+#+end_src
+
+** toc-org
+
+[[https://github.com/snosov1/toc-org]]
+
+#+begin_src emacs-lisp
+(straight-use-package 'toc-org)
+
+(add-hook 'org-mode-hook 'toc-org-mode)
 #+end_src
 
 ** Emacs Lisp in Org
