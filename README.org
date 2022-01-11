@@ -263,12 +263,12 @@ the font size of the ~default~ face.
   :bind (:map my-toggles-map ("T" . modus-themes-toggle))
   :custom
   ;; Use lightened variant of the Solarized Light background color (yellowish),
-  ;; instead of pure white.
+  ;; instead of the pure white.
   (modus-themes-operandi-color-overrides '((bg-main . "#fdf8eb")
                                            (bg-dim . "#f6f1e5")
                                            (bg-alt . "#eeeadd")))
 
-  ;; Use light-grey as the default text color, instead of pure white.
+  ;; Use light-grey as the default text color, instead of the pure white.
   (modus-themes-vivendi-color-overrides '((fg-main . "#ebebeb")))
 
   ;; Other theme customizatins (peronal preferences).
@@ -1050,7 +1050,6 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
   (global-set-key (kbd "<f11>") #'org-narrow-to-subtree))
 (global-set-key (kbd "<f12>") #'widen)
 #+end_src
-
 
 * Org
 
