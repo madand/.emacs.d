@@ -802,20 +802,56 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 
 * Misc
 
-Kitchen sink for the time being.
+** Enable all disabled commands
+
+[[info:emacs#Disabling][emacs#Disabling]]
+
+Some of the Emacs commands (e.g. ~narrow-to-region~) are disabled by default and
+Emacs asks permission to run such a command every time. Let's enable them all.
+
+First, remember the exact list of initially disabled commands.
+
+#+begin_src emacs-lisp
+(defvar my-initially-disabled-commands (cl-loop for sym being the symbols
+                                                when (get sym 'disabled)
+                                                  collect sym)
+  "Commands that are disabled by default.")
+#+end_src
+
+Now, enable all of them.
+
+#+begin_src emacs-lisp
+(dolist (command my-initially-disabled-commands)
+  (put command 'disabled nil))
+#+end_src
+
+** Undo/Redo
+
+[[info:emacs#Undo][emacs#Undo]]
+
+*** vundo
+
+[[https://github.com/casouri/vundo]]
+
+#+begin_src emacs-lisp
+(use-package vundo
+  :straight '(vundo :type git :host github :repo "casouri/vundo")
+  :bind ("C-<f1>" . vundo))
+#+end_src
+
+** ytdl
+
+#+begin_src emacs-lisp
+(use-package ytdl
+  :custom
+  (ytdl-video-folder "~/media/Video/"))
+#+end_src
+
+** Kitchen sink for the time being
 
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-<f5>") my-toggles-map)
-
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-(global-set-key (kbd "C-x k") #'kill-this-buffer)
-(global-set-key (kbd "C-z") #'set-mark-command)
-
-(global-set-key (kbd "C-c v") #'view-mode)
-
-(global-set-key (kbd "M-c") #'capitalize-dwim)
-(global-set-key (kbd "M-l") #'downcase-dwim)
-(global-set-key (kbd "M-u") #'upcase-dwim)
+(define-key my-toggles-map "F" #'follow-delete-other-windows-and-split)
 
 (define-key help-map "-" #'describe-syntax)
 (define-key help-map "S" nil)
@@ -935,6 +971,39 @@ Make the found definition be displayed at the top of the window:
   :straight nil
   :config
   (require 'dired-x))
+#+end_src
+
+** iedit
+
+[[https://github.com/victorhge/iedit]]
+
+Edit multiple regions in the same way simultaneously.
+
+#+begin_src emacs-lisp
+(use-package iedit
+  :custom
+  (iedit-toggle-key-default (kbd "C-:")))
+#+end_src
+
+** visual-fill-column-mode
+
+#+begin_src emacs-lisp
+(straight-use-package 'visual-fill-column)
+#+end_src
+
+** nov.el - EPUB Reader
+
+#+begin_src emacs-lisp
+(straight-use-package 'nov)
+
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+(defun my-set-visual-fill-column-center-text ()
+  (setq visual-fill-column-center-text t))
+
+(add-hook 'nov-mode-hook 'my-set-visual-fill-column-center-text)
+(add-hook 'nov-mode-hook 'visual-line-mode)
+(add-hook 'nov-mode-hook 'visual-fill-column-mode)
 #+end_src
 
 * Version Control
