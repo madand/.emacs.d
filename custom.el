@@ -30,7 +30,6 @@
  '(ielm-prompt "λ> ")
  '(indent-tabs-mode nil)
  '(isearch-lazy-count t)
- '(jit-lock-defer-time 0.3)
  '(magit-diff-highlight-hunk-region-functions
    '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-overlays))
  '(orderless-component-separator " +\\|[-/]")

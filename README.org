@@ -51,7 +51,6 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
 - [[#files][Files]]
   - [[#auto-save][Auto Save]]
   - [[#backup-files][Backup Files]]
-  - [[#find-file-at-point][Find File at Point]]
   - [[#recentf][recentf]]
 - [[#frames][Frames]]
 - [[#misc][Misc]]
@@ -854,24 +853,6 @@ Delete excess backup versions silently.
 
 #+begin_src emacs-lisp
 (setq delete-old-versions t)
-#+end_src
-
-** Find File at Point
-
-Replace ~find-file~ and friends with smarter versions.
-
-#+begin_src emacs-lisp
-(ffap-bindings)
-#+end_src
-
-When a file is opened read-only, enable ~view-mode~.
-
-#+begin_src emacs-lisp
-(defun my-turn-on-view-mode (&rest _)
-  (view-mode 1))
-
-(advice-add 'ffap-read-only :after #'my-turn-on-view-mode)
-(advice-add 'ffap-read-only-other-window :after #'my-turn-on-view-mode)
 #+end_src
 
 ** recentf
