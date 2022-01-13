@@ -68,6 +68,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#iedit][iedit]]
   - [[#visual-fill-column-mode][visual-fill-column-mode]]
   - [[#novel---epub-reader][nov.el - EPUB Reader]]
+  - [[#wgrep][wgrep]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1075,6 +1076,14 @@ Edit multiple regions in the same way simultaneously.
 (add-hook 'nov-mode-hook 'my-set-visual-fill-column-center-text)
 (add-hook 'nov-mode-hook 'visual-line-mode)
 (add-hook 'nov-mode-hook 'visual-fill-column-mode)
+#+end_src
+
+** wgrep
+
+[[https://github.com/mhayashi1120/Emacs-wgrep]]
+
+#+begin_src emacs-lisp
+(use-package wgrep)
 #+end_src
 
 * Version Control
