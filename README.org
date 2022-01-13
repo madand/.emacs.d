@@ -56,6 +56,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
 - [[#misc][Misc]]
   - [[#enable-all-disabled-commands][Enable all disabled commands]]
   - [[#undoredo][Undo/Redo]]
+  - [[#vundo][vundo]]
   - [[#ytdl][ytdl]]
   - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
   - [[#startup][Startup]]
@@ -901,7 +902,7 @@ Now, enable all of them.
 
 [[info:emacs#Undo][emacs#Undo]]
 
-*** vundo
+** vundo
 
 [[https://github.com/casouri/vundo]]
 
