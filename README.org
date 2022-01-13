@@ -608,6 +608,13 @@ Customize buffer:
          ("M-." . embark-dwim)))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package embark-consult
+  :after (embark consult)
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+#+end_src
+
 ** Marginalia
 
 [[https://github.com/minad/marginalia]]
