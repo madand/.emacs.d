@@ -1270,8 +1270,8 @@ buffer or string. Implemented as a random forest classifier, trained in
 scikit-learn and deployed to Emacs Lisp.
 
 This handy library allows us to have syntax highlighting (as provided by the
-corresponding major mode!) in [[info:eww#Top][EWW]], [[https://github.com/wasamasa/nov.el][nov.el]] or any other packrce that renders HTML
-content with the library ~shr~.
+corresponding major mode!) in [[info:eww#Top][EWW]], [[https://github.com/wasamasa/nov.el][nov.el]] or any other packages that render
+HTML content with the ~shr~ library.
 
 First, let's install the package and define helper functions:
 
@@ -1324,7 +1324,7 @@ First, let's install the package and define helper functions:
          (mode (cl-loop for mode in modes
                         when (fboundp mode)
                         return mode)))
-    (message (format "%s" language))
+    (message (format "Detected language: %s" language))
     (when (fboundp mode)
       mode)))
 
