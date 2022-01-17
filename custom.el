@@ -58,6 +58,7 @@
  '(use-short-answers t)
  '(view-read-only t)
  '(visible-bell t)
+ '(wgrep-auto-save-buffer t)
  '(which-key-idle-delay 0.8)
  '(which-key-idle-secondary-delay 0.3)
  '(which-key-max-description-length nil)
