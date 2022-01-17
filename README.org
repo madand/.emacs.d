@@ -83,6 +83,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#toc-org][toc-org]]
   - [[#emacs-lisp-in-org][Emacs Lisp in Org]]
 - [[#eww][EWW]]
+  - [[#fix-bold-and-italic-with-proportional-font][Fix bold and italic with proportional font]]
 - [[#autotyping][Autotyping]]
   - [[#abbrev-mode][Abbrev Mode]]
   - [[#auto-revert][Auto Revert]]
@@ -1231,6 +1232,8 @@ Some conveniences for working with Elisp code blocks.
 #+end_src
 
 * EWW
+
+** Fix bold and italic with proportional font
 
 #+begin_src emacs-lisp
 (el-patch-feature shr)
