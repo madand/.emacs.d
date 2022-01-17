@@ -70,6 +70,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#visual-fill-column-mode][visual-fill-column-mode]]
   - [[#novel---epub-reader][nov.el - EPUB Reader]]
   - [[#wgrep][wgrep]]
+  - [[#speed-type][speed-type]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1092,6 +1093,16 @@ Edit multiple regions in the same way simultaneously.
 
 #+begin_src emacs-lisp
 (use-package wgrep)
+#+end_src
+
+** speed-type
+
+[[https://github.com/hagleitn/speed-type]]
+
+Practice touch/speed typing in Emacs.
+
+#+begin_src emacs-lisp
+(use-package speed-type)
 #+end_src
 
 * Version Control
