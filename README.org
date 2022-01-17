@@ -1344,6 +1344,16 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
           ("C-c e" . macrostep-expand)))
 #+end_src
 
+* Clojure
+
+** Cider
+
+[[https://github.com/clojure-emacs/cider]]
+
+#+begin_src emacs-lisp
+(use-package cider)
+#+end_src
+
 * Programming
 
 ** Web Mode
