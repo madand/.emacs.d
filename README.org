@@ -1104,6 +1104,15 @@ Practice touch/speed typing in Emacs.
 
 #+begin_src emacs-lisp
 (use-package speed-type)
+
+(defun my-speed-type-setup-buffer (&rest _)
+  "Configure a `speed-type' buffer."
+  (setq-local view-read-only nil)
+  (setq-local scroll-conservatively 101)
+  (text-scale-set 3))
+(advice-add 'speed-type--setup :after #'my-speed-type-setup-buffer)
+;(advice-remove 'speed-type--setup #'my-speed-type-setup-buffer)
+
 #+end_src
 
 * Version Control
