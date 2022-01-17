@@ -10,6 +10,8 @@
  '(auto-revert-verbose nil)
  '(backup-by-copying t)
  '(blink-cursor-blinks 3)
+ '(browse-url-browser-function 'eww-browse-url)
+ '(browse-url-secondary-browser-function 'browse-url-firefox)
  '(buffer-auto-revert-by-notification t t)
  '(completion-ignore-case t t)
  '(create-lockfiles nil)
