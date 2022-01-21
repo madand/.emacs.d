@@ -1152,6 +1152,8 @@ text comfortably in the middle of the window.
 
 [[https://gitlab.com/ambrevar/emacs-disk-usage]]
 
+View aggregate disk usage statistics. Emacs alternative for =ncdu=.
+
 #+begin_src emacs-lisp
 (straight-use-package 'disk-usage)
 #+end_src
@@ -1576,3 +1578,9 @@ fill-column: 80
 indent-tabs-mode: nil
 End:
 #+end_example
+
+#+begin_src emacs-lisp
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars)
+;; End:
+#+end_src
