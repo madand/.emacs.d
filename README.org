@@ -1096,7 +1096,7 @@ in the file-system, but rather created on-demand and stored in memory.
 #+begin_src emacs-lisp
 (straight-use-package 'pdf-tools)
 
-(add-hook 'after-init-hook #' pdf-tools-install)
+(add-hook 'after-init-hook #'pdf-tools-install)
 #+end_src
 
 ** wgrep
@@ -1135,6 +1135,17 @@ text comfortably in the middle of the window.
 
 #+begin_src emacs-lisp
 (straight-use-package 'olivetti)
+
+(with-eval-after-load 'olivetti
+  (setq olivetti-style 'fancy)
+  ;; Make olivetti-fringe the same color as the header line
+  (face-spec-set 'olivetti-fringe
+                 `((((class color) (background light)) :inherit fringe
+                    :background ,(alist-get 'bg-header
+                                            modus-themes-operandi-colors))
+                   (((class color) (background dark)) :inherit fringe
+                    :background ,(alist-get 'bg-header
+                                            modus-themes-vivendi-colors)))))
 #+end_src
 
 ** disk-usage.el

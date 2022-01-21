@@ -19,7 +19,9 @@
  '(dired-auto-revert-buffer t)
  '(dired-do-revert-buffer t)
  '(dired-dwim-target 'dired-dwim-target-recent)
- '(dired-guess-shell-alist-user '(("\\.\\(mkv\\|mp4\\|mpg\\|vob\\|avi\\)\\'" "mpv")))
+ '(dired-guess-shell-alist-user
+   '(("\\.\\(pdf\\)\\'" "zathura")
+     ("\\.\\(mkv\\|mp4\\|mpg\\|vob\\|avi\\)\\'" "mpv")))
  '(dired-isearch-filenames 'dwim)
  '(dired-listing-switches "-alh")
  '(dired-mode-hook '(dired-extra-startup dired-hide-details-mode))
@@ -35,7 +37,6 @@
  '(isearch-lazy-count t)
  '(magit-diff-highlight-hunk-region-functions
    '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-overlays))
- '(olivetti-style 'fancy)
  '(orderless-component-separator " +\\|[-/]")
  '(orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism))
  '(org-agenda-files '("~/.emacs.d/README.org"))
