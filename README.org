@@ -69,8 +69,11 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#iedit][iedit]]
   - [[#visual-fill-column-mode][visual-fill-column-mode]]
   - [[#novel---epub-reader][nov.el - EPUB Reader]]
+  - [[#pdf-tools][pdf-tools]]
   - [[#wgrep][wgrep]]
   - [[#speed-type][speed-type]]
+  - [[#olivetti][Olivetti]]
+  - [[#disk-usageel][disk-usage.el]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1080,13 +1083,20 @@ Edit multiple regions in the same way simultaneously.
 (straight-use-package 'nov)
 
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+#+end_src
 
-(defun my-set-visual-fill-column-center-text ()
-  (setq visual-fill-column-center-text t))
+** pdf-tools
 
-(add-hook 'nov-mode-hook 'my-set-visual-fill-column-center-text)
-(add-hook 'nov-mode-hook 'visual-line-mode)
-(add-hook 'nov-mode-hook 'visual-fill-column-mode)
+[[https://github.com/vedang/pdf-tools]]
+
+PDF Tools is, among other things, a replacement of DocView for PDF files. The
+key difference is that pages are not pre-rendered by e.g. ghostscript and stored
+in the file-system, but rather created on-demand and stored in memory.
+
+#+begin_src emacs-lisp
+(straight-use-package 'pdf-tools)
+
+(add-hook 'after-init-hook #' pdf-tools-install)
 #+end_src
 
 ** wgrep
@@ -1114,6 +1124,25 @@ Practice touch/speed typing in Emacs.
 (advice-add 'speed-type--setup :after #'my-speed-type-setup-buffer)
 ;(advice-remove 'speed-type--setup #'my-speed-type-setup-buffer)
 
+#+end_src
+
+** Olivetti
+
+[[https://github.com/rnkn/olivetti]]
+
+Set a desired text body width to automatically resize window margins to keep the
+text comfortably in the middle of the window.
+
+#+begin_src emacs-lisp
+(straight-use-package 'olivetti)
+#+end_src
+
+** disk-usage.el
+
+[[https://gitlab.com/ambrevar/emacs-disk-usage]]
+
+#+begin_src emacs-lisp
+(straight-use-package 'disk-usage)
 #+end_src
 
 * Version Control

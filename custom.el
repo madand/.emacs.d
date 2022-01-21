@@ -9,10 +9,11 @@
  '(auto-revert-use-notify t)
  '(auto-revert-verbose nil)
  '(backup-by-copying t)
- '(blink-cursor-blinks 3)
+ '(blink-cursor-blinks 2)
  '(browse-url-browser-function 'eww-browse-url)
  '(browse-url-secondary-browser-function 'browse-url-firefox)
  '(buffer-auto-revert-by-notification t t)
+ '(calendar-week-start-day 1)
  '(completion-ignore-case t t)
  '(create-lockfiles nil)
  '(dired-auto-revert-buffer t)
@@ -34,6 +35,7 @@
  '(isearch-lazy-count t)
  '(magit-diff-highlight-hunk-region-functions
    '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-overlays))
+ '(olivetti-style 'fancy)
  '(orderless-component-separator " +\\|[-/]")
  '(orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism))
  '(org-agenda-files '("~/.emacs.d/README.org"))
@@ -42,6 +44,7 @@
  '(org-src-window-setup 'current-window)
  '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
+ '(recenter-positions '(top middle bottom))
  '(recentf-max-saved-items nil)
  '(require-final-newline t)
  '(safe-local-variable-values
