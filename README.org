@@ -13,7 +13,6 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
 * Table of Contents                                                     :TOC:
 - [[#early-config][Early Config]]
   - [[#preamble][Preamble]]
-  - [[#init-file-compilation][Init File Compilation]]
   - [[#custom-settings-in-a-separate-file][Custom Settings in a Separate File]]
   - [[#native-compilation][Native Compilation]]
   - [[#define-custom-keymaps][Define Custom Keymaps]]
@@ -53,6 +52,8 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#backup-files][Backup Files]]
   - [[#recentf][recentf]]
   - [[#sudo-edit][sudo-edit]]
+- [[#windows][Windows]]
+  - [[#winner-mode][winner-mode]]
 - [[#frames][Frames]]
 - [[#misc][Misc]]
   - [[#gpg][GPG]]
@@ -60,7 +61,6 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#undoredo][Undo/Redo]]
   - [[#vundo][vundo]]
   - [[#ytdl][ytdl]]
-  - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
   - [[#startup][Startup]]
   - [[#save-place][Save Place]]
   - [[#incremental-search-isearch][Incremental Search (isearch)]]
@@ -76,6 +76,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#speed-type][speed-type]]
   - [[#olivetti][Olivetti]]
   - [[#disk-usageel][disk-usage.el]]
+  - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -107,7 +108,6 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#hideshow-mode][hideshow-mode]]
   - [[#minibuffer-and-completions-in-tandem-mct][Minibuffer and Completions in Tandem (mct)]]
 - [[#license][License]]
-- [[#epilogue][Epilogue]]
 
 * Early Config
 
@@ -120,7 +120,7 @@ The heading part of the tangled ~init.el~ file.
 #+begin_src emacs-lisp
 ;;; init.el --- The Emacs Initialization File        -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021 Andriy Kmit'
+;; Copyright (C) 2022 Andriy Kmit'
 
 ;; Author: Andriy Kmit' <dev@madand.net>
 ;; URL: https://github.com/madand/.emacs.d
@@ -148,19 +148,6 @@ The heading part of the tangled ~init.el~ file.
 ;;; Code:
 #+end_src
 
-** Init File Compilation
-
-This function must be at the very top, so we can still re-tangle and re-compile,
-in the event that later parts of the init file signalled an error.
-
-#+begin_src emacs-lisp
-(defun my-compile-init-file ()
-  "Byte and native (re)compile the Emacs init file (init.el)."
-  (let ((init-file (expand-file-name "init.el" user-emacs-directory)))
-    (byte-recompile-file init-file nil 0)
-    (native-compile init-file)))
-#+end_src
-
 ** Custom Settings in a Separate File
 
 #+begin_src emacs-lisp
@@ -172,7 +159,7 @@ in the event that later parts of the init file signalled an error.
 
 [[info:elisp#Native Compilation][Native Compilation]]
 
-Allow native compilation to utilize all available cores.
+Allow native compilation to utilize all the available cores.
 
 #+begin_src emacs-lisp
 (setq native-comp-async-jobs-number (num-processors))
@@ -255,7 +242,13 @@ Delight enables you to easily customise how major and minor modes appear in the
 Mode Line.
 
 #+begin_src emacs-lisp
-(use-package delight)
+(straight-use-package 'delight)
+#+end_src
+
+Let's disable indicators of some of the built-in minor modes:
+
+#+begin_src emacs-lisp
+(delight '((eldoc-mode nil eldoc)))
 #+end_src
 
 ** el-patch
@@ -274,6 +267,7 @@ Mode Line.
 
 #+begin_src emacs-lisp
 (use-package which-key
+  :delight which-key-mode
   :init
   (which-key-setup-side-window-right-bottom)
   (which-key-mode))
@@ -351,7 +345,7 @@ the font size of the ~default~ face.
 (advice-add 'load-theme :after #'my-set-mode-line-font-face)
 #+end_src
 
-** Themes: Modus Themes
+** Themes: Modus Themes                                             :builtin:
 - [[https://protesilaos.com/emacs/modus-themes]]
 - [[info:modus-themes#Top][modus-themes#Top]]
 
@@ -377,7 +371,6 @@ the font size of the ~default~ face.
   (modus-themes-org-blocks 'gray-background)
   (modus-themes-prompts '(gray))
   (modus-themes-region '(no-extend bg-only))
-  (modus-themes-scale-headings t)
   (modus-themes-subtle-line-numbers t)
   (modus-themes-syntax '(faint))
   (modus-themes-variable-pitch-headings t)
@@ -409,7 +402,7 @@ Display ^L glyphs as horizontal lines.
   :init (global-form-feed-mode))
 #+end_src
 
-** display-fill-column-indicator
+** display-fill-column-indicator                                    :builtin:
 
 [[info:emacs#Displaying Boundaries][emacs#Displaying Boundaries]]
 
@@ -427,8 +420,8 @@ Display ^L glyphs as horizontal lines.
 *** show-trailing-whitespace
 
 Emacs provides a (buffer-local) varirble ~show-trailing-whitespace~ to control the
-displaying of the trailing whitespace. Here we define simple minor mode that
-will set the said varirble on or off for us.
+displaying of the trailing whitespace. Here we define a simple minor mode that
+will toggle that varirble for us.
 
 #+begin_src emacs-lisp
 (define-minor-mode my-show-trailing-whitespace-mode
@@ -455,7 +448,7 @@ Automatically show trailing whitespace in programming, text and Org mode.
 (add-hook 'org-mode-hook #'my-show-trailing-whitespace-mode)
 #+end_src
 
-*** whitespace-mode
+*** whitespace-mode                                                 :builtin:
 
 ~whitespace-mode~ visually displays ALL kinds of whitespace characters: spaces,
 tabs, newlines etc.
@@ -483,7 +476,7 @@ An unobtrusive way to trim spaces from end of line.
   :hook ((prog-mode text-mode org-mode) . ws-butler-mode))
 #+end_src
 
-** pulse
+** pulse                                                            :builtin:
 
 #+begin_src emacs-lisp
 (defun pulse-line (&rest _)
@@ -549,7 +542,8 @@ See also `my-quick-select-keys'.")
   (avy-background t)
   (avy-single-candidate-jump nil)
   :bind (("M-o" . avy-goto-char-timer)
-         ("C-M-," . avy-goto-line)))
+         ("M-g l" . avy-goto-line)
+         ("M-g w" . avy-goto-word-1)))
 #+end_src
 
 *** Avy Embark Integration
@@ -613,7 +607,9 @@ Customize buffer:
 #+begin_src emacs-lisp
 (use-package embark
   :bind (("C-." . embark-act)
-         ("M-." . embark-dwim)))
+         ("M-." . embark-dwim)
+         :map special-mode-map
+         ("." . embark-act)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -762,6 +758,9 @@ while still keeping them within arm’s reach.
         '("\\*Messages\\*"
           "Output\\*$"
           "\\*Async Shell Command\\*"
+          "\\*Native-compile-Log\\*"
+          "\\*Async-native-compile-log\\*"
+          "\\*Compile-Log\\*"
           help-mode
           compilation-mode))
   (popper-mode +1)
@@ -798,7 +797,7 @@ Make default argument be displayed as ~[DEFAULT-ARG]~ instead of
 (setq history-delete-duplicates t)
 #+end_src
 
-** Savehist
+** Savehist                                                         :builtin:
 
 Save minibuffer and other "history" across Emacs restarts.
 
@@ -872,7 +871,7 @@ Delete excess backup versions silently.
 (setq delete-old-versions t)
 #+end_src
 
-** recentf
+** recentf                                                          :builtin:
 
 #+begin_src emacs-lisp
 (use-package recentf
@@ -938,6 +937,23 @@ With prefix argument, always prompt for a file to sudo-edit."
       (kill-buffer orig-buffer))))
 #+end_src
 
+* Windows
+
+** winner-mode                                                     :builtin:
+
+Winner mode is a global minor mode that records the changes in the window
+configuration (i.e. how the frames are partitioned into windows) so that the
+changes can be "undone" using the command `winner-undo'.  By default this one is
+bound to the key sequence ctrl-c left.  If you change your mind (while undoing),
+you can press ctrl-c right (calling `winner-redo').
+
+#+begin_src emacs-lisp
+(winner-mode 1)
+
+(global-set-key (kbd "C-x w u") #'winner-undo)
+(global-set-key (kbd "C-x w r") #'winner-redo)
+#+end_src
+
 * Frames
 
 Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
@@ -1001,41 +1017,7 @@ Now, enable all of them.
   (ytdl-video-folder "~/media/Video/"))
 #+end_src
 
-** Kitchen sink for the time being
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-<f5>") my-toggles-map)
-(define-key my-toggles-map "F" #'follow-delete-other-windows-and-split)
-
-(define-key help-map "-" #'describe-syntax)
-(define-key help-map "S" nil)
-(define-key help-map "s" #'info-lookup-symbol)
-
-(define-key emacs-lisp-mode-map (kbd "<f5>") #'eval-defun)
-
-(setq set-mark-command-repeat-pop t)
-
-(setq read-extended-command-predicate #'command-completion-default-include-p)
-
-(setq tab-always-indent 'complete)
-;; https://codeberg.org/joostkremers/visual-fill-column/src/branch/main/visual-fill-column.el
-
-;; Read buffer for external processes.
-(setq read-process-output-max (* 256 1024))
-(setq source-directory (expand-file-name "~/git/emacs-git/"))
-
-(setq-default fill-column 80)
-
-(setq show-paren-when-point-inside-paren t)
-(electric-pair-mode)
-(repeat-mode)
-
-(use-package mwim
-  :bind (("C-a" . mwim-beginning)
-         ("C-e" . mwim-end)))
-#+end_src
-
-** Startup
+** Startup                                                          :builtin:
 
 #+begin_src emacs-lisp
 (use-package startup
@@ -1051,7 +1033,7 @@ Now, enable all of them.
   (initial-scratch-message nil))
 #+end_src
 
-** Save Place
+** Save Place                                                       :builtin:
 
 ~save-place-mode~ remembers the last point position in each visisted file,
 across Emacs restarts.
@@ -1063,7 +1045,7 @@ across Emacs restarts.
   (save-place-mode 1))
 #+end_src
 
-** Incremental Search (isearch)
+** Incremental Search (isearch)                                     :builtin:
 
 ~-~ key can be used without using ~Shift~.
 
@@ -1071,7 +1053,7 @@ across Emacs restarts.
 (define-key search-map "-" #'isearch-forward-symbol)
 #+end_src
 
-** Xref
+** Xref                                                             :builtin:
 
 [[info:emacs#Xref][emacs#Xref]]
 
@@ -1087,15 +1069,11 @@ Make xref use rg for faster searches:
 Make the found definition be displayed at the top of the window:
 
 #+begin_src emacs-lisp
-(defun my-recenter-top-1 ()
-  "Recenter point to 1 line below the top of the window."
-  (recenter 1))
-
-(remove-hook 'xref-after-update-hook 'recenter)
-(add-hook 'xref-after-update-hook #'my-recenter-top-1)
+; (remove-hook 'xref-after-update-hook 'recenter)
+(add-hook 'xref-after-update-hook #'reposition-window)
 #+end_src
 
-** Help
+** Help                                                             :builtin:
 
 #+begin_src emacs-lisp
 (use-package help
@@ -1118,7 +1096,7 @@ Make the found definition be displayed at the top of the window:
     ("r" . rainbow-mode)))
 #+end_src
 
-** Dired
+** Dired                                                            :builtin:
 
 #+begin_src emacs-lisp
 (use-package dired
@@ -1203,6 +1181,10 @@ text comfortably in the middle of the window.
 
 #+begin_src emacs-lisp
 (straight-use-package 'olivetti)
+(delight 'olivetti-mode nil 'olivetti)
+
+(add-hook 'eww-mode-hook #'olivetti-mode)
+(add-hook 'nov-mode-hook #'olivetti-mode)
 
 (with-eval-after-load 'olivetti
   (setq olivetti-style 'fancy)
@@ -1226,6 +1208,40 @@ View aggregate disk usage statistics. Emacs alternative for =ncdu=.
 (straight-use-package 'disk-usage)
 #+end_src
 
+** Kitchen sink for the time being
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-<f5>") my-toggles-map)
+(define-key my-toggles-map "F" #'follow-delete-other-windows-and-split)
+
+(define-key help-map "-" #'describe-syntax)
+(define-key help-map "S" nil)
+(define-key help-map "s" #'info-lookup-symbol)
+
+(define-key emacs-lisp-mode-map (kbd "<f5>") #'eval-defun)
+
+(setq set-mark-command-repeat-pop t)
+
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+
+(setq tab-always-indent 'complete)
+;; https://codeberg.org/joostkremers/visual-fill-column/src/branch/main/visual-fill-column.el
+
+;; Read buffer for external processes.
+(setq read-process-output-max (* 256 1024))
+(setq source-directory (expand-file-name "~/git/emacs-git/"))
+
+(setq-default fill-column 80)
+
+(setq show-paren-when-point-inside-paren t)
+(electric-pair-mode)
+(repeat-mode)
+
+(use-package mwim
+  :bind (("C-a" . mwim-beginning)
+         ("C-e" . mwim-end)))
+#+end_src
+
 * Version Control
 ** Magit
 
@@ -1240,7 +1256,7 @@ View aggregate disk usage statistics. Emacs alternative for =ncdu=.
   (setq magit-define-global-key-bindings t))
 #+end_src
 
-** vc
+** vc                                                               :builtin:
 
 Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 
@@ -1266,14 +1282,15 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 #+begin_src emacs-lisp
 (global-set-key (kbd "<f9>") #'narrow-to-defun)
 (global-set-key (kbd "<f10>") #'narrow-to-region)
-(with-eval-after-load 'org
-  (global-set-key (kbd "<f11>") #'org-narrow-to-subtree))
 (global-set-key (kbd "<f12>") #'widen)
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "<f11>") #'org-narrow-to-subtree))
 #+end_src
 
 * Org
 
-** Org Mode
+** Org Mode                                                         :builtin:
 
 [[https://orgmode.org/]]
 [[info:org#Top][Org Info Manual]]
@@ -1282,6 +1299,7 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 (use-package org
   :custom
   (org-edit-src-content-indentation 0)
+  (org-agenda-files '("~/org/"))
   :bind
   (("C-c l" . org-store-link)
    ("C-c c" . org-capture)
@@ -1475,7 +1493,7 @@ Now, hook up our custom ~<pre>~-tags rendering function to ~shr~ and ~nov~.
 
 [[info:autotype#Top][Autotype]]
 
-** Abbrev Mode
+** Abbrev Mode                                                      :builtin:
 
 #+begin_src emacs-lisp
 (use-package abbrev
@@ -1486,7 +1504,7 @@ Now, hook up our custom ~<pre>~-tags rendering function to ~shr~ and ~nov~.
     (add-hook hook #'abbrev-mode)))
 #+end_src
 
-** Auto Revert
+** Auto Revert                                                      :builtin:
 
 [[info:emacs#Auto Revert][emacs#Auto Revert]]
 
@@ -1495,7 +1513,7 @@ Now, hook up our custom ~<pre>~-tags rendering function to ~shr~ and ~nov~.
   :delight auto-revert-mode)
 #+end_src
 
-** Hippie Expand
+** Hippie Expand                                                    :builtin:
 
 [[info:autotype#Hippie Expand][Hippie Expand]]
 
@@ -1633,22 +1651,21 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
 
 GNU GPLv3.
 
-* Epilogue
+* Epilogue                                                         :noexport:
 
-File-local variables defined here make Emacs (re)tangle and then (re)compile the
-init file (~init.el~), whenever this file is saved.
+Conventional ending for the =init.el=:
+
+#+begin_src emacs-lisp
+;;; init.el ends here
+#+end_src
+
+File-local variables defined here make Emacs (re)tangle the init file (~init.el~),
+whenever this file is saved.
 
 #+begin_example
 Local Variables:
 eval: (add-hook 'after-save-hook #'org-babel-tangle 90 t)
-eval: (add-hook 'after-save-hook #'my-compile-init-file 91 t)
 fill-column: 80
 indent-tabs-mode: nil
 End:
 #+end_example
-
-#+begin_src emacs-lisp
-;; Local Variables:
-;; byte-compile-warnings: (not free-vars)
-;; End:
-#+end_src
