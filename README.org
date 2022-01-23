@@ -97,7 +97,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#hippie-expand][Hippie Expand]]
 - [[#lisp][Lisp]]
   - [[#lisp-extra-font-lock][lisp-extra-font-lock]]
-  - [[#paredit][paredit]]
+  - [[#lispy][Lispy]]
   - [[#profiler][Profiler]]
   - [[#macrostep-interactive-macro-expander][macrostep: interactive macro-expander]]
 - [[#clojure][Clojure]]
@@ -1556,14 +1556,25 @@ my opinion, is the highlighting of dynamically scoped variables (~defvar~) in
   (lisp-extra-font-lock-global-mode))
 #+end_src
 
-** paredit
+** Lispy
+
+[[https://github.com/abo-abo/lispy]]
+
+This package reimagines Paredit - a popular method to navigate and edit Lisp
+code in Emacs.
 
 #+begin_src emacs-lisp
-(use-package paredit
-  :hook ((emacs-lisp-mode lisp-mode) . enable-paredit-mode))
+(straight-use-package 'lispy)
+
+(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+(add-hook 'lisp-mode-hook #'lispy-mode)
+
+(with-eval-after-load 'lispy
+  (define-key lispy-mode-map (kbd "M-o") nil)
+  (define-key lispy-mode-map-special (kbd "M-o") nil))
 #+end_src
 
-** Profiler
+** Profiler                                                         :builtin:
 
 #+begin_src emacs-lisp
 (use-package profiler
