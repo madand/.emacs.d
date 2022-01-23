@@ -303,28 +303,30 @@ full support for displaying emojis. No configuration needed!
 (defvar my-font-sizes '( :laptop (16 . 20)
                          :monitor (21 . 26)))
 
-(defun my-set-faces-font-size (font-sizes)
+(cl-defun my-set-faces-font-size (font-sizes &optional (frame (window-frame)))
   (pcase-let ((`(,fixed-size . ,variable-size) font-sizes))
-    (set-face-font 'variable-pitch (font-spec :size variable-size) (window-frame))
+    (set-face-font 'variable-pitch (font-spec :size variable-size) frame)
     (dolist (face '(default fixed-pitch fixed-pitch-serif))
-      (set-face-font face (font-spec :size fixed-size) (window-frame)))))
+      (set-face-font face (font-spec :size fixed-size) frame))))
 
-(defun my-set-font-size-laptop ()
+(defun my-set-font-size-laptop (&optional frame)
   (interactive)
-  (my-set-faces-font-size (plist-get my-font-sizes :laptop)))
+  (my-set-faces-font-size (plist-get my-font-sizes :laptop) frame))
 
-(defun my-set-font-size-monitor ()
+(defun my-set-font-size-monitor (&optional frame)
   (interactive)
-  (my-set-faces-font-size (plist-get my-font-sizes :monitor)))
+  (my-set-faces-font-size (plist-get my-font-sizes :monitor) frame))
 
-(defun my-update-font-size-for-monitor-function (&rest _)
-  (cond
-   ((> (cl-third (frame-monitor-geometry)) 1366)
-    (my-set-font-size-monitor))
-   (t (my-set-font-size-laptop))))
+(defun my-update-font-size-per-display (&optional frame &rest _)
+  (let ((frame (and (framep frame) frame)))
+    (cond
+     ((> (cl-third (frame-monitor-geometry frame)) 1366)
+      (my-set-font-size-monitor frame))
+     (t (my-set-font-size-laptop frame)))))
 
-(add-hook 'window-size-change-functions #'my-update-font-size-for-monitor-function)
-(advice-add 'load-theme :after #'my-update-font-size-for-monitor-function)
+(add-hook 'window-size-change-functions #'my-update-font-size-per-display)
+(add-hook 'after-make-frame-functions #'my-update-font-size-per-display)
+(advice-add 'load-theme :after #'my-update-font-size-per-display)
 #+end_src
 
 Ensure that mode line will be displayed with the fixed font size, not tied to
