@@ -1302,6 +1302,8 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
   :custom
   (org-edit-src-content-indentation 0)
   (org-agenda-files '("~/org/"))
+  (org-ellipsis "…")
+  (org-hide-emphasis-markers t)
   :bind
   (("C-c l" . org-store-link)
    ("C-c c" . org-capture)

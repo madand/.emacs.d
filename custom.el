@@ -40,7 +40,6 @@
    '(magit-diff-highlight-hunk-region-dim-outside magit-diff-highlight-hunk-region-using-overlays))
  '(orderless-component-separator " +\\|[-/]")
  '(orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism))
- '(org-hide-emphasis-markers t)
  '(org-roam-completion-everywhere t)
  '(org-src-window-setup 'current-window)
  '(read-buffer-completion-ignore-case t)
