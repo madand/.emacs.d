@@ -14,6 +14,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
 - [[#early-config][Early Config]]
   - [[#preamble][Preamble]]
   - [[#custom-settings-in-a-separate-file][Custom Settings in a Separate File]]
+  - [[#setup-local-packages-path][Setup local packages path]]
   - [[#native-compilation][Native Compilation]]
   - [[#define-custom-keymaps][Define Custom Keymaps]]
 - [[#package-management][Package Management]]
@@ -153,6 +154,15 @@ The heading part of the tangled ~init.el~ file.
 #+begin_src emacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file :no-error)
+#+end_src
+
+** Setup local packages path
+
+Add the directory =lisp= to =load-path= to make the packages residing there
+~load~'able and/or ~require~'able.
+
+#+begin_src emacs-lisp
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 #+end_src
 
 ** Native Compilation
