@@ -261,6 +261,56 @@ Let's disable indicators of some of the built-in minor modes:
 
 * Key Bindings
 
+** general.el
+
+[[https://github.com/noctuid/general.el]]
+
+The one package to rule all the keybindings.
+
+#+begin_src emacs-lisp
+(straight-use-package 'general)
+#+end_src
+
+** Global Key Bindings
+
+#+begin_src emacs-lisp
+
+(defvar my-super-map (make-sparse-keymap)
+  "Keymap for the Super (Win) key bindings.")
+
+(general-def
+  "C-c v" #'view-mode
+
+  "C-x C-b" #'ibuffer
+  "C-x b" #'consult-buffer
+
+  "C-o" #'open-line
+  "C-t" #'transpose-chars
+  "C-z" #'set-mark-command
+
+  "M-SPC" #'cycle-spacing
+
+  "s-o" #'mode-line-other-buffer
+  "s-k" #'kill-this-buffer
+  "s-," #'previous-buffer
+  "s-." #'next-buffer
+
+  ;; Keys to be defined…
+  "M-\\" 'undefined
+  "C-x C-l" 'undefined
+  "C-x C-u" 'undefined)
+#+end_src
+
+Use DWIM variants of case converting commands. This frees up 2 key chords:
+=C-c C-l= and =C-c C-u=.
+
+#+begin_src emacs-lisp
+(general-def
+  "M-c" #'capitalize-dwim
+  "M-l" #'downcase-dwim
+  "M-u" #'upcase-dwim)
+#+end_src
+
 ** which-key
 
 [[https://github.com/justbur/emacs-which-key]]
