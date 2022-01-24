@@ -1333,8 +1333,16 @@ Don't annoy us with ~Symbolic link to Git-controlled source file; follow link?~.
 [[info:emacs#Language Environments][Language Environments]]
 
 #+begin_src emacs-lisp
+(require 'ukrainian-computer-keymacs-madand)
+
+(defun my-setup-input-method ()
+  "Set up custom Ukrainian input method."
+  (when (equal current-language-environment "UTF-8")
+    (setq default-input-method "ukrainian-computer-keymacs-madand")))
+
+(add-hook 'set-language-environment-hook #'my-setup-input-method)
+
 (set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
 #+end_src
 
 * Narrowing
