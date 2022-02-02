@@ -81,6 +81,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#grugru][grugru]]
   - [[#erc][ERC]]
   - [[#erc-hl-nicks][erc-hl-nicks]]
+  - [[#markdown-mode][markdown-mode]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1335,6 +1336,19 @@ View aggregate disk usage statistics. Emacs alternative for =ncdu=.
 #+begin_src emacs-lisp
 (with-eval-after-load 'erc
   (require 'erc-hl-nicks))
+#+end_src
+
+** markdown-mode
+
+https://jblevins.org/projects/markdown-mode/
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 #+end_src
 
 * Version Control
