@@ -78,6 +78,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#olivetti][Olivetti]]
   - [[#disk-usageel][disk-usage.el]]
   - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
+  - [[#grugru][grugru]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1302,6 +1303,20 @@ View aggregate disk usage statistics. Emacs alternative for =ncdu=.
 (use-package mwim
   :bind (("C-a" . mwim-beginning)
          ("C-e" . mwim-end)))
+#+end_src
+
+** grugru
+
+[[https://github.com/ROCKTAKEY/grugru]]
+
+#+begin_src emacs-lisp
+(use-package grugru
+  :general
+  ("C-'" #'grugru)
+  (org-mode-map
+   "C-'" #'grugru)
+  :config
+  (grugru-default-setup))
 #+end_src
 
 * Version Control
