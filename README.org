@@ -182,8 +182,8 @@ Allow native compilation to utilize all the available cores.
 ** Define Custom Keymaps
 
 #+begin_src emacs-lisp
-(defvar my-toggles-map (make-sparse-keymap)
-  "Keymap for toggling stuff like minor modes.")
+(define-prefix-command 'my-toggles-map)
+(global-set-key (kbd "C-<f5>") 'my-toggles-map)
 #+end_src
 
 * Package Management
@@ -292,6 +292,9 @@ The one package to rule all the keybindings.
 (defvar my-super-map (make-sparse-keymap)
   "Keymap for the Super (Win) key bindings.")
 
+(general-def my-toggles-map
+  "v" #'visible-mode)
+
 (general-def
   "C-c v" #'view-mode
 
@@ -316,7 +319,7 @@ The one package to rule all the keybindings.
 #+end_src
 
 Use DWIM variants of case converting commands. This frees up 2 key chords:
-=C-c C-l= and =C-c C-u=.
+=C-x C-l= and =C-x C-u=.
 
 #+begin_src emacs-lisp
 (general-def
@@ -333,7 +336,7 @@ Use DWIM variants of case converting commands. This frees up 2 key chords:
 (use-package which-key
   :delight which-key-mode
   :init
-  (which-key-setup-side-window-right-bottom)
+  (which-key-setup-side-window-bottom)
   (which-key-mode))
 #+end_src
 
@@ -675,14 +678,16 @@ Customize buffer:
   :bind (("C-." . embark-act)
          ("M-." . embark-dwim)
          :map special-mode-map
-         ("." . embark-act)))
+         ("." . embark-act)
+         :map minibuffer-local-map
+         ("C-c e e" . embark-export)
+         ("C-c e l" . embark-collect-live)
+         ("C-c e s" . embark-collect-snapshot)))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package embark-consult
-  :after (embark consult)
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :after (embark consult))
 #+end_src
 
 ** Marginalia
@@ -1167,6 +1172,10 @@ Make the found definition be displayed at the top of the window:
 #+begin_src emacs-lisp
 (use-package dired
   :straight nil
+  :bind ( :map dired-mode-map
+          ("b" . dired-up-directory))
+  :custom
+  (dired-listing-switches "-alhG --group-directories-first")
   :config
   (require 'dired-x))
 #+end_src
@@ -1216,7 +1225,9 @@ in the file-system, but rather created on-demand and stored in memory.
 [[https://github.com/mhayashi1120/Emacs-wgrep]]
 
 #+begin_src emacs-lisp
-(use-package wgrep)
+(use-package wgrep
+  :bind ( :map grep-mode-map
+          ("e" . wgrep-change-to-wgrep-mode)))
 #+end_src
 
 ** speed-type
@@ -1251,6 +1262,9 @@ text comfortably in the middle of the window.
 
 (add-hook 'eww-mode-hook #'olivetti-mode)
 (add-hook 'nov-mode-hook #'olivetti-mode)
+(add-hook 'org-mode-hook #'olivetti-mode)
+
+(define-key my-toggles-map (kbd "o") #'olivetti-mode)
 
 (with-eval-after-load 'olivetti
   (setq olivetti-style 'fancy)
@@ -1698,7 +1712,7 @@ code in Emacs.
 #+begin_src emacs-lisp
 (use-package profiler
   :straight nil
-  :bind  ( :map my-toggles-map
+  :general  ( :prefix-command my-toggles-map
            ("p p" . profiler-start)
            ("p r" . profiler-report)
            ("p o" . profiler-reset)
