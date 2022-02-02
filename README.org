@@ -82,6 +82,7 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#erc][ERC]]
   - [[#erc-hl-nicks][erc-hl-nicks]]
   - [[#markdown-mode][markdown-mode]]
+  - [[#goto-last-change][goto-last-change]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1363,6 +1364,13 @@ https://jblevins.org/projects/markdown-mode/
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+** goto-last-change
+
+#+begin_src emacs-lisp
+(use-package goto-last-change
+  :bind ("C-x C-\\" . goto-last-change))
 #+end_src
 
 * Version Control
