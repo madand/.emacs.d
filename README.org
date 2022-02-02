@@ -1049,22 +1049,22 @@ Rebind ~C-x 5 c~ because its original command, ~clone-frame~, may crash Emacs.
 [[info:emacs#Disabling][emacs#Disabling]]
 
 Some of the Emacs commands (e.g. ~narrow-to-region~) are disabled by default and
-Emacs asks permission to run such a command every time. Let's enable them all.
+Emacs asks permission to run such a command every time.
 
-First, remember the exact list of initially disabled commands.
+Let's disable the command that asks for permission to run a disabled command;
+thus enabling all the commands that are disabled by default 😁
+
+#+begin_src emacs-lisp
+(setq disabled-command-function 'ignore)
+#+end_src
+
+For the sake of curiousity, let's remember the exact list of disabled commands.
 
 #+begin_src emacs-lisp
 (defvar my-initially-disabled-commands (cl-loop for sym being the symbols
                                                 when (get sym 'disabled)
-                                                  collect sym)
+                                                collect sym)
   "Commands that are disabled by default.")
-#+end_src
-
-Now, enable all of them.
-
-#+begin_src emacs-lisp
-(dolist (command my-initially-disabled-commands)
-  (put command 'disabled nil))
 #+end_src
 
 ** Undo/Redo
