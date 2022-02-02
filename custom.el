@@ -27,6 +27,7 @@
  '(dired-mode-hook '(dired-extra-startup dired-hide-details-mode))
  '(ediff-split-window-function 'split-window-horizontally)
  '(ediff-window-setup-function 'ediff-setup-windows-plain)
+ '(erc-hide-list '("JOIN" "PART" "QUIT"))
  '(eshell-history-size 1000)
  '(global-auto-revert-non-file-buffers t)
  '(ielm-dynamic-return nil)

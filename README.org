@@ -79,6 +79,8 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#disk-usageel][disk-usage.el]]
   - [[#kitchen-sink-for-the-time-being][Kitchen sink for the time being]]
   - [[#grugru][grugru]]
+  - [[#erc][ERC]]
+  - [[#erc-hl-nicks][erc-hl-nicks]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1317,6 +1319,22 @@ View aggregate disk usage statistics. Emacs alternative for =ncdu=.
    "C-'" #'grugru)
   :config
   (grugru-default-setup))
+#+end_src
+
+** ERC
+
+#+begin_src emacs-lisp
+(defun my-setup-erc-buffer ()
+  (setq-local scroll-conservatively 101))
+
+(add-hook 'erc-mode-hook #'my-setup-erc-buffer)
+#+end_src
+
+** erc-hl-nicks
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'erc
+  (require 'erc-hl-nicks))
 #+end_src
 
 * Version Control
