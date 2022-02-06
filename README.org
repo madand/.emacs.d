@@ -307,6 +307,7 @@ The one package to rule all the keybindings.
   "C-z" #'set-mark-command
 
   "M-SPC" #'cycle-spacing
+  "M-z" #'zap-up-to-char
 
   "s-o" #'mode-line-other-buffer
   "s-k" #'kill-this-buffer
@@ -821,7 +822,6 @@ while still keeping them within arm’s reach.
 
 #+begin_src emacs-lisp
 (use-package popper
-  :ensure t ; or :straight t
   :bind (("C-~"   . popper-toggle-latest)
          ("M-~"   . popper-cycle)
          ("C-M-~" . popper-toggle-type))
@@ -833,6 +833,7 @@ while still keeping them within arm’s reach.
           "\\*Native-compile-Log\\*"
           "\\*Async-native-compile-log\\*"
           "\\*Compile-Log\\*"
+          "\\*Warnings\\*"
           help-mode
           compilation-mode))
   (popper-mode +1)
@@ -1263,7 +1264,6 @@ text comfortably in the middle of the window.
 
 (add-hook 'eww-mode-hook #'olivetti-mode)
 (add-hook 'nov-mode-hook #'olivetti-mode)
-(add-hook 'org-mode-hook #'olivetti-mode)
 
 (define-key my-toggles-map (kbd "o") #'olivetti-mode)
 
@@ -1651,7 +1651,9 @@ Now, hook up our custom ~<pre>~-tags rendering function to ~shr~ and ~nov~.
 
 #+begin_src emacs-lisp
 (use-package autorevert
-  :delight auto-revert-mode)
+  :delight auto-revert-mode
+  :config
+  (global-auto-revert-mode 1))
 #+end_src
 
 ** Hippie Expand                                                    :builtin:
@@ -1720,7 +1722,7 @@ code in Emacs.
 #+begin_src emacs-lisp
 (use-package profiler
   :straight nil
-  :general  ( :prefix-command my-toggles-map
+  :bind  ( :map my-toggles-map
            ("p p" . profiler-start)
            ("p r" . profiler-report)
            ("p o" . profiler-reset)
