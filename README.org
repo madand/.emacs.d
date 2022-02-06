@@ -83,6 +83,8 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#erc-hl-nicks][erc-hl-nicks]]
   - [[#markdown-mode][markdown-mode]]
   - [[#goto-last-change][goto-last-change]]
+  - [[#embraceel][embrace.el]]
+  - [[#keyfreq][keyfreq]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -102,6 +104,8 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#auto-revert][Auto Revert]]
   - [[#hippie-expand][Hippie Expand]]
 - [[#lisp][Lisp]]
+  - [[#sly][Sly]]
+  - [[#sly-macrostep][sly-macrostep]]
   - [[#lisp-extra-font-lock][lisp-extra-font-lock]]
   - [[#lispy][Lispy]]
   - [[#profiler][Profiler]]
@@ -1373,6 +1377,35 @@ https://jblevins.org/projects/markdown-mode/
   :bind ("C-x C-\\" . goto-last-change))
 #+end_src
 
+** embrace.el
+
+https://github.com/cute-jumper/embrace.el
+
+Add/Change/Delete pairs based on [[https://github.com/magnars/expand-region.el][expand-region]]. Simlar to =evil-surround=, a port of =vim-surround=.
+
+#+begin_src emacs-lisp
+(use-package embrace
+  :bind ("C-c s" .  embrace-commander))
+#+end_src
+
+** keyfreq
+
+https://github.com/dacap/keyfreq
+
+Track Emacs commands frequency stats.
+
+#+begin_src emacs-lisp
+(use-package keyfreq
+  :config
+  (setq keyfreq-excluded-commands '(self-insert-command
+                                    forward-char
+                                    backward-char
+                                    previous-line
+                                    next-line))
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
+#+end_src
+
 * Version Control
 ** Magit
 
@@ -1680,6 +1713,24 @@ Now, hook up our custom ~<pre>~-tags rendering function to ~shr~ and ~nov~.
 * Lisp
 
 Stuff for improving the experience when working with Lisp code.
+
+** Sly
+
+https://github.com/joaotavora/sly
+
+SLY is a fork of SLIME, feature-rich Common Lisp interaction environment.
+
+#+begin_src emacs-lisp
+(use-package sly)
+#+end_src
+
+** sly-macrostep
+
+https://github.com/joaotavora/sly-macrostep
+
+#+begin_src emacs-lisp
+(use-package sly-macrostep)
+#+end_src
 
 ** lisp-extra-font-lock
 
