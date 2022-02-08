@@ -85,6 +85,8 @@ packages might be of use and how to build (semi-)mnemonic key bindings.
   - [[#goto-last-change][goto-last-change]]
   - [[#embraceel][embrace.el]]
   - [[#keyfreq][keyfreq]]
+  - [[#dockerfile-mode][dockerfile-mode]]
+  - [[#yaml-mode][yaml-mode]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#vc][vc]]
@@ -1404,6 +1406,22 @@ Track Emacs commands frequency stats.
                                     next-line))
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
+#+end_src
+
+** dockerfile-mode
+
+https://github.com/spotify/dockerfile-mode
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode)
+#+end_src
+
+** yaml-mode
+
+https://github.com/yoshiki/yaml-mode
+
+#+begin_src emacs-lisp
+(use-package yaml-mode)
 #+end_src
 
 * Version Control
