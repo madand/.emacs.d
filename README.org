@@ -1063,7 +1063,7 @@ Let's disable the command that asks for permission to run a disabled command;
 thus enabling all the commands that are disabled by default 😁
 
 #+begin_src emacs-lisp
-(setq disabled-command-function 'ignore)
+(setq disabled-command-function nil)
 #+end_src
 
 For the sake of curiousity, let's remember the exact list of disabled commands.
